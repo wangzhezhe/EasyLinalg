@@ -79,7 +79,7 @@ void testInit()
     Matrix<int, 3, 3> m2;
     m2.InitEye();
     // the size can be determined automatically
-    auto m3 = MatrixMultiply(m1, m2);
+    auto m3 = MMMultiply(m1, m2);
     m3.Show();
 }
 
@@ -201,7 +201,7 @@ void testQRInner()
     // Q is check orthoganal matrix
     auto Qt = Q;
     Qt.Transpose();
-    auto QtQ = MatrixMultiply(Qt, Q);
+    auto QtQ = MMMultiply(Qt, Q);
     puts("QtQ is");
     QtQ.Show();
 
@@ -222,7 +222,7 @@ void testQRInner()
     }
 
     // checking results of Q*R
-    auto m = MatrixMultiply(Q, R);
+    auto m = MMMultiply(Q, R);
 
     puts("Q * R");
     m.Show();
@@ -251,7 +251,7 @@ void testEVNQRInner()
         }
         Vec<double, Num> eigenValues;
         m1.Show();
-        SymmEigenvalues(m1, 0.0001, 20, eigenValues);
+        SymmEigenValues(m1, 0.0001, 20, eigenValues);
 
         for (int i = 0; i < 3; i++)
         {
@@ -275,7 +275,7 @@ void testEVNQRInner()
         }
         Vec<double, Num> eigenValues;
         m1.Show();
-        SymmEigenvalues(m1, 0.0001, 20, eigenValues);
+        SymmEigenValues(m1, 0.0001, 20, eigenValues);
 
         for (int i = 0; i < 4; i++)
         {
@@ -300,7 +300,7 @@ void testEVNQRInner()
         }
         Vec<double, Num> eigenValues;
         m1.Show();
-        SymmEigenvalues(m1, 0.0001, 20, eigenValues);
+        SymmEigenValues(m1, 0.0001, 20, eigenValues);
 
         for (int i = 0; i < Num; i++)
         {
@@ -327,6 +327,58 @@ void testEigenValuesNaiveQR()
     testEVNQRInner<8>();
 }
 
+void testED3by3()
+{
+    printf("---test_eigen_vectors_decomposition 3by3\n");
+    Matrix<double, 3, 3> x;
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            x[i][j] = in33_3[i][j];
+        }
+    }
+
+    Matrix<double, 3, 3> A = SymmEigenDecomposition(x, 0.00001, 20);
+    Matrix<double, 3, 3> ATrans = A;
+    ATrans.Transpose();
+    Matrix<double, 3, 3> rst = MMMultiply(A, ATrans);
+    puts("A");
+    A.Show();
+    puts("rst");
+    rst.Show();
+    assert(x.IsEqual(rst) == true);
+}
+
+void testED4by4()
+{
+    printf("---test_eigen_vectors_decomposition 3by3\n");
+    Matrix<double, 4, 4> x;
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            x[i][j] = in44_3[i][j];
+        }
+    }
+
+    Matrix<double, 4, 4> A = SymmEigenDecomposition(x, 0.00001, 20);
+    Matrix<double, 4, 4> ATrans = A;
+    ATrans.Transpose();
+    Matrix<double, 4, 4> rst = MMMultiply(A, ATrans);
+    puts("A");
+    A.Show();
+    puts("rst");
+    rst.Show();
+    assert(x.IsEqual(rst) == true);
+}
+
+void testEigenDecomposition()
+{
+    testED3by3();
+    testED4by4();
+}
+
 int main()
 {
     testInit();
@@ -334,5 +386,5 @@ int main()
     testQR();
 
     testEigenValuesNaiveQR();
-    //testEigenVectors();
+    testEigenDecomposition();
 }

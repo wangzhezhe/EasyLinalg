@@ -27,16 +27,16 @@ public:
     /Users/zw1/Documents/cworkspace/src/EasyLinalg/StaticMemTemplate/mathTemplate.h:141:42: error: no viable overloaded operator[] for type 'const Vec<Vec<double, NUM_COLUMNS>, NUM_ROWS>'
                 this->Components[i][j] = t.Components[i][j];
                                          ^~~~~~~~~~~~ ~
-/Users/zw1/Documents/cworkspace/src/EasyLinalg/StaticMemTemplate/mathTemplate.h:343:15: note: in instantiation of member function 'Matrix<double, 3, 3>::operator=' requested here
+    /Users/zw1/Documents/cworkspace/src/EasyLinalg/StaticMemTemplate/mathTemplate.h:343:15: note: in instantiation of member function 'Matrix<double, 3, 3>::operator=' requested here
             Q = MatrixMultiply(Q, MList[k]);
               ^
-/Users/zw1/Documents/cworkspace/src/EasyLinalg/StaticMemTemplate/test.cpp:163:5: note: in instantiation of function template specialization 'Householder<double, 3U, 3U>' requested here
+    /Users/zw1/Documents/cworkspace/src/EasyLinalg/StaticMemTemplate/test.cpp:163:5: note: in instantiation of function template specialization 'Householder<double, 3U, 3U>' requested here
     Householder(x,Q,R);
     ^
-/Users/zw1/Documents/cworkspace/src/EasyLinalg/StaticMemTemplate/test.cpp:187:5: note: in instantiation of function template specialization 'testQRInner<3U>' requested here
+    /Users/zw1/Documents/cworkspace/src/EasyLinalg/StaticMemTemplate/test.cpp:187:5: note: in instantiation of function template specialization 'testQRInner<3U>' requested here
     testQRInner<3>();
     ^
-/Users/zw1/Documents/cworkspace/src/EasyLinalg/StaticMemTemplate/mathTemplate.h:18:8: note: candidate function not viable: 'this' argument has type 'const Vec<Vec<double, NUM_COLUMNS>, NUM_ROWS>', but method is not marked const
+    /Users/zw1/Documents/cworkspace/src/EasyLinalg/StaticMemTemplate/mathTemplate.h:18:8: note: candidate function not viable: 'this' argument has type 'const Vec<Vec<double, NUM_COLUMNS>, NUM_ROWS>', but method is not marked const
     T &operator[](const int index)
 
     The failure happens because Non-const functions can only be called by non-const objects.
@@ -111,6 +111,37 @@ public:
             this->Components[i] = static_cast<T>(1.0 * this->Components[i] / d);
         }
         return;
+    }
+
+    bool Equal(const Vec &t)
+    {
+        if (this->NUM_COMPONENTS != t.NUM_COMPONENTS)
+        {
+            return false;
+        }
+
+        for (uint i = 0; i < this->NUM_COMPONENTS; i++)
+        {
+            if (fabs(this->Components[i] - t.Components[i]) > 0.0001)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    void Normalize()
+    {
+        double sum = 0;
+        for (uint i = 0; i < this->NUM_COMPONENTS; i++)
+        {
+            sum += this->Components[i] * this->Components[i];
+        }
+        assert(fabs(sum - 0.0) > 0.000001);
+        for (uint i = 0; i < this->NUM_COMPONENTS; i++)
+        {
+            this->Components[i] = this->Components[i] / sqrt(sum);
+        }
     }
 };
 
@@ -316,7 +347,7 @@ template <typename T,
           uint NumRow,
           uint NumCol,
           uint NumInternal>
-Matrix<T, NumRow, NumCol> MatrixMultiply(
+Matrix<T, NumRow, NumCol> MMMultiply(
     Matrix<T, NumRow, NumInternal> &leftFactor,
     Matrix<T, NumInternal, NumCol> &rightFactor)
 {
@@ -332,6 +363,24 @@ Matrix<T, NumRow, NumCol> MatrixMultiply(
             {
                 result[i][j] = result[i][j] + leftFactor[i][k] * rightFactor[k][j];
             }
+        }
+    }
+    return result;
+}
+
+template <typename T,
+          uint NumRow,
+          uint NumCol>
+Vec<T, NumRow> MMVultiply(const Matrix<T, NumRow, NumCol> &inputM, const Vec<T, NumCol> inputV)
+{
+    Vec<T, NumRow> result;
+    result.InitZero();
+    for (int i = 0; i < NumRow; i++)
+    {
+        for (int j = 0; j < NumCol; j++)
+        {
+            // for each row
+            result[i] += inputM[i][j] * inputV[j];
         }
     }
     return result;
@@ -456,7 +505,7 @@ void Householder(
         else
         {
             // Q = MatrixMultiply(Q, MList[k]);
-            Q = MatrixMultiply(Q, MTemp);
+            Q = MMMultiply(Q, MTemp);
         }
 
         // update R
@@ -468,15 +517,228 @@ void Householder(
         // R.Show();
 
         // R = MatrixMultiply(MList[k], R);
-        R = MatrixMultiply(MTemp, R);
+        R = MMMultiply(MTemp, R);
 
         // puts("update R is");
         // R.Show();
     }
 }
 
+template <typename T>
+bool SymmInvertMatrixInner(const Matrix<T, 3, 3> &m, Matrix<T, 3, 3> &inv_m)
+{
+    inv_m[0][0] = m[1][1] * m[2][2] - m[1][2] * m[2][1];
+
+    inv_m[1][0] = m[1][2] * m[2][0] - m[1][0] * m[2][2];
+
+    inv_m[2][0] = m[1][0] * m[2][1] - m[1][1] * m[2][0];
+
+    inv_m[0][1] = m[0][2] * m[2][1] - m[0][1] * m[2][2];
+
+    inv_m[1][1] = m[0][0] * m[2][2] - m[0][2] * m[2][0];
+
+    inv_m[2][1] = m[0][1] * m[2][0] - m[0][0] * m[2][1];
+
+    inv_m[0][2] = m[0][1] * m[1][2] - m[0][2] * m[1][1];
+
+    inv_m[1][2] = m[0][2] * m[1][0] - m[0][0] * m[1][2];
+
+    inv_m[2][2] = m[0][0] * m[1][1] - m[0][1] * m[1][0];
+
+    double det = m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+
+    if (det == 0)
+    {
+        printf("singular matrix\n");
+        // matrix_show(m);
+        return false;
+    }
+
+    det = 1.0 / det;
+
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            inv_m[i][j] = inv_m[i][j] * det;
+        }
+    }
+
+    return true;
+}
+
+template <typename T>
+bool SymmInvertMatrixInner(const Matrix<T, 4, 4> &m, Matrix<T, 4, 4> &inv_m)
+{
+         inv_m[0][0] = m[1][1] * m[2][2] * m[3][3] -
+                         m[1][1] * m[2][3] * m[3][2] -
+                         m[2][1] * m[1][2] * m[3][3] +
+                         m[2][1] * m[1][3] * m[3][2] +
+                         m[3][1] * m[1][2] * m[2][3] -
+                         m[3][1] * m[1][3] * m[2][2];
+
+        inv_m[1][0] = -m[1][0] * m[2][2] * m[3][3] +
+                         m[1][0] * m[2][3] * m[3][2] +
+                         m[2][0] * m[1][2] * m[3][3] -
+                         m[2][0] * m[1][3] * m[3][2] -
+                         m[3][0] * m[1][2] * m[2][3] +
+                         m[3][0] * m[1][3] * m[2][2];
+
+        inv_m[2][0] = m[1][0] * m[2][1] * m[3][3] -
+                         m[1][0] * m[2][3] * m[3][1] -
+                         m[2][0] * m[1][1] * m[3][3] +
+                         m[2][0] * m[1][3] * m[3][1] +
+                         m[3][0] * m[1][1] * m[2][3] -
+                         m[3][0] * m[1][3] * m[2][1];
+
+        inv_m[3][0] = -m[1][0] * m[2][1] * m[3][2] +
+                         m[1][0] * m[2][2] * m[3][1] +
+                         m[2][0] * m[1][1] * m[3][2] -
+                         m[2][0] * m[1][2] * m[3][1] -
+                         m[3][0] * m[1][1] * m[2][2] +
+                         m[3][0] * m[1][2] * m[2][1];
+
+        inv_m[0][1] = -m[0][1] * m[2][2] * m[3][3] +
+                         m[0][1] * m[2][3] * m[3][2] +
+                         m[2][1] * m[0][2] * m[3][3] -
+                         m[2][1] * m[0][3] * m[3][2] -
+                         m[3][1] * m[0][2] * m[2][3] +
+                         m[3][1] * m[0][3] * m[2][2];
+
+        inv_m[1][1] = m[0][0] * m[2][2] * m[3][3] -
+                         m[0][0] * m[2][3] * m[3][2] -
+                         m[2][0] * m[0][2] * m[3][3] +
+                         m[2][0] * m[0][3] * m[3][2] +
+                         m[3][0] * m[0][2] * m[2][3] -
+                         m[3][0] * m[0][3] * m[2][2];
+
+        inv_m[2][1] = -m[0][0] * m[2][1] * m[3][3] +
+                         m[0][0] * m[2][3] * m[3][1] +
+                         m[2][0] * m[0][1] * m[3][3] -
+                         m[2][0] * m[0][3] * m[3][1] -
+                         m[3][0] * m[0][1] * m[2][3] +
+                         m[3][0] * m[0][3] * m[2][1];
+
+        inv_m[3][1] = m[0][0] * m[2][1] * m[3][2] -
+                         m[0][0] * m[2][2] * m[3][1] -
+                         m[2][0] * m[0][1] * m[3][2] +
+                         m[2][0] * m[0][2] * m[3][1] +
+                         m[3][0] * m[0][1] * m[2][2] -
+                         m[3][0] * m[0][2] * m[2][1];
+
+        inv_m[0][2] = m[0][1] * m[1][2] * m[3][3] -
+                         m[0][1] * m[1][3] * m[3][2] -
+                         m[1][1] * m[0][2] * m[3][3] +
+                         m[1][1] * m[0][3] * m[3][2] +
+                         m[3][1] * m[0][2] * m[1][3] -
+                         m[3][1] * m[0][3] * m[1][2];
+
+        inv_m[1][2] = -m[0][0] * m[1][2] * m[3][3] +
+                         m[0][0] * m[1][3] * m[3][2] +
+                         m[1][0] * m[0][2] * m[3][3] -
+                         m[1][0] * m[0][3] * m[3][2] -
+                         m[3][0] * m[0][2] * m[1][3] +
+                         m[3][0] * m[0][3] * m[1][2];
+
+        inv_m[2][2] = m[0][0] * m[1][1] * m[3][3] -
+                         m[0][0] * m[1][3] * m[3][1] -
+                         m[1][0] * m[0][1] * m[3][3] +
+                         m[1][0] * m[0][3] * m[3][1] +
+                         m[3][0] * m[0][1] * m[1][3] -
+                         m[3][0] * m[0][3] * m[1][1];
+
+        inv_m[3][2] = -m[0][0] * m[1][1] * m[3][2] +
+                         m[0][0] * m[1][2] * m[3][1] +
+                         m[1][0] * m[0][1] * m[3][2] -
+                         m[1][0] * m[0][2] * m[3][1] -
+                         m[3][0] * m[0][1] * m[1][2] +
+                         m[3][0] * m[0][2] * m[1][1];
+
+        inv_m[0][3] = -m[0][1] * m[1][2] * m[2][3] +
+                         m[0][1] * m[1][3] * m[2][2] +
+                         m[1][1] * m[0][2] * m[2][3] -
+                         m[1][1] * m[0][3] * m[2][2] -
+                         m[2][1] * m[0][2] * m[1][3] +
+                         m[2][1] * m[0][3] * m[1][2];
+
+        inv_m[1][3] = m[0][0] * m[1][2] * m[2][3] -
+                         m[0][0] * m[1][3] * m[2][2] -
+                         m[1][0] * m[0][2] * m[2][3] +
+                         m[1][0] * m[0][3] * m[2][2] +
+                         m[2][0] * m[0][2] * m[1][3] -
+                         m[2][0] * m[0][3] * m[1][2];
+
+        inv_m[2][3] = -m[0][0] * m[1][1] * m[2][3] +
+                         m[0][0] * m[1][3] * m[2][1] +
+                         m[1][0] * m[0][1] * m[2][3] -
+                         m[1][0] * m[0][3] * m[2][1] -
+                         m[2][0] * m[0][1] * m[1][3] +
+                         m[2][0] * m[0][3] * m[1][1];
+
+        inv_m[3][3] = m[0][0] * m[1][1] * m[2][2] -
+                         m[0][0] * m[1][2] * m[2][1] -
+                         m[1][0] * m[0][1] * m[2][2] +
+                         m[1][0] * m[0][2] * m[2][1] +
+                         m[2][0] * m[0][1] * m[1][2] -
+                         m[2][0] * m[0][2] * m[1][1];
+
+        double det = m[0][0] * inv_m[0][0] +
+                     m[0][1] * inv_m[1][0] +
+                     m[0][2] * inv_m[2][0] +
+                     m[0][3] * inv_m[3][0];
+
+        if (det == 0)
+        {
+            printf("singular matrix for 4by4\n");
+            // matrix_show(m);
+            return false;
+        }
+
+        det = 1.0 / det;
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                inv_m[i][j] = inv_m[i][j] * det;
+            }
+        }
+
+        return true;
+}
+
 template <typename T, uint Size>
-void SymmEigenvalues(const Matrix<T, Size, Size> &A, double tol, int maxIter, Vec<T, Size> &eigenValues)
+bool SymmInvertMatrixInnerGeneral(const Matrix<T, Size, Size> &m, Matrix<T, Size, Size> &inv_m){
+puts("TODO");
+return true;
+}
+
+
+template <typename T,
+          uint Size>
+bool SymmInvertMatrix(const Matrix<T, Size, Size> &A, Matrix<T, Size, Size> &AInv)
+{
+
+    if (Size == 3)
+    {
+        SymmInvertMatrixInner(A, AInv);
+        return true;
+    }
+    else if (Size == 4)
+    {
+        SymmInvertMatrixInner(A, AInv);
+        return true;
+    }
+    else
+    {
+        //TODO adding size = 2
+        SymmInvertMatrixInnerGeneral(A, AInv);
+    }
+    return false;
+}
+
+template <typename T, uint Size>
+void SymmEigenValues(const Matrix<T, Size, Size> &A, double tol, int maxIter, Vec<T, Size> &eigenValues)
 {
     // refer to https://www.andreinc.net/2021/01/25/computing-eigenvalues-and-eigenvectors-using-qr-decomposition
     // mat_t ak = *x;
@@ -496,8 +758,8 @@ void SymmEigenvalues(const Matrix<T, Size, Size> &A, double tol, int maxIter, Ve
         // puts("Q");
         // Q.Show();
 
-        Ak = MatrixMultiply(R, Q);
-        QQ = MatrixMultiply(QQ, Q);
+        Ak = MMMultiply(R, Q);
+        QQ = MMMultiply(QQ, Q);
 
         if (Ak.IsUpperTriangular(tol))
         {
@@ -516,6 +778,112 @@ void SymmEigenvalues(const Matrix<T, Size, Size> &A, double tol, int maxIter, Ve
             eigenValues[i] = Ak[i][i];
         }
     }
+}
+
+// using inverse itertaion to compute the eigen vectors
+// https://en.wikipedia.org/wiki/Inverse_iteration
+template <typename T, uint Size>
+Matrix<T, Size, Size> SymmEigenVectors(const Matrix<T, Size, Size> &A, const Vec<T, Size> &eigenValues, int maxIter)
+{
+
+    Matrix<T, Size, Size> eigenVectors;
+    Matrix<T, Size, Size> A_minus_lambda_i;
+    Matrix<T, Size, Size> A_minus_lambda_inv;
+    // go through each eigen values
+    for (uint j = 0; j < Size; j++)
+    {
+        if (fabs(eigenValues[j] - 0.0) < 0.00001)
+        {
+            // the associated eigen vector is all zero
+            continue;
+        }
+
+        double lambda = eigenValues[j] + 0.000001;
+        for (uint ii = 0; ii < Size; ii++)
+        {
+            for (uint jj = 0; jj < Size; jj++)
+            {
+                if (ii == jj)
+                {
+                    A_minus_lambda_i[ii][jj] = A[ii][jj] - lambda;
+                }
+                else
+                {
+                    A_minus_lambda_i[ii][jj] = A[ii][jj];
+                }
+            }
+        }
+
+        // puts("a-lambda*I");
+        // A_minus_lambda_i.Show();
+
+        bool invertok = SymmInvertMatrix(A_minus_lambda_i, A_minus_lambda_inv);
+        assert(invertok == true);
+
+        // puts("a-lambda*I inv");
+        // A_minus_lambda_inv.Show();
+
+        Vec<T, Size> bPrev;
+        Vec<T, Size> bCurr;
+        // init as 1
+        for (int i = 0; i < Size; i++)
+        {
+            bPrev[i] = 1.0;
+        }
+        uint iterNum = 0;
+        while (iterNum < maxIter)
+        {
+            bCurr = MMVultiply(A_minus_lambda_inv, bPrev);
+            // puts("check mmv");
+            // bCurr.Show();
+
+            bCurr.Normalize();
+            // puts("check norm");
+            // bCurr.Show();
+
+            if (bCurr.Equal(bPrev))
+            {
+                // results convert
+                break;
+            }
+            bPrev = bCurr;
+            iterNum++;
+        }
+
+        // assign to the matrix
+        for (uint i = 0; i < Size; i++)
+        {
+            eigenVectors[i][j] = bCurr[i];
+        }
+    }
+    return eigenVectors;
+}
+
+template <typename T, uint Size>
+Matrix<T, Size, Size> SymmEigenDecomposition(const Matrix<T, Size, Size> &A, double tol, int maxIter)
+{
+
+    // solve eigen values
+    Vec<T, Size> eigenValues;
+    eigenValues.InitZero();
+    SymmEigenValues(A, tol, 20, eigenValues);
+
+    eigenValues.Show();
+
+    // solve eigen vectors
+    Matrix<T, Size, Size> eigenVactors;
+    eigenVactors = SymmEigenVectors(A, eigenValues, maxIter);
+
+    // create diagonal matrix
+    Matrix<T, Size, Size> diag;
+    for (uint i = 0; i < Size; i++)
+    {
+        diag[i][i] = sqrt(eigenValues[i]);
+    }
+
+    Matrix<T, Size, Size> decompA;
+    decompA = MMMultiply(eigenVactors, diag);
+    return decompA;
 }
 
 #endif

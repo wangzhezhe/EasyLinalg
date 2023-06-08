@@ -10,6 +10,11 @@ StaticMemTemplate shows how to use cpp template to handle the case to support th
 
 OtherExampels shows some commonly used exmaple based on python scipy, gsl library and the EIGEN library. These libraries is originally designed to run on cpu and it is hard to be adopted to gpu. Since we need to update all function call and adding some key words such as __device__ before the function call.
 
+### TODO
+
+adding eigen decomposition for 3by3 4by4 and 8by8
+split out into different header files. defination, symm matrix operation, unsymm ...
+
 ### References
 
 GSL online code
