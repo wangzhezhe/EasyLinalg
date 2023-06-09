@@ -1,4 +1,5 @@
-#include "mathTemplate.h"
+#include <include/basic.h>
+#include <include/eigen.h>
 #include <assert.h>
 
 double in33_0[3][3] = {
@@ -44,6 +45,12 @@ double in44_3[4][4] = {
     {0.0, 20.0, 60.0, 40.0},
     {0.0, 60.0, 180.0, 120.0},
     {0.0, 40.0, 120.0, 80.0}};
+
+double in44_4[4][4] = {
+    {0.0024507, 0.0026104, 0.0019078, 0.0025373},
+    {0.0026104, 0.0028755, 0.0020373, 0.0027783},
+    {0.0019078, 0.0020373, 0.0015548, 0.0020305},
+    {0.0025373, 0.0027783, 0.0020305, 0.0027494}};
 
 double in88_0[8][8] = {
     {1, 1, 0, 1, 0, 1, 0, 1},
@@ -352,17 +359,19 @@ void testED3by3()
 
 void testED4by4()
 {
-    printf("---test_eigen_vectors_decomposition 3by3\n");
-    Matrix<double, 4, 4> x;
+    printf("---test_eigen_vectors_decomposition 4by4\n");
+    Matrix<double, 4, 4> x1;
+    Matrix<double, 4, 4> x2;
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < 4; j++)
         {
-            x[i][j] = in44_3[i][j];
+            x1[i][j] = in44_3[i][j];
+            x2[i][j] = in44_4[i][j];
         }
     }
 
-    Matrix<double, 4, 4> A = SymmEigenDecomposition(x, 0.00001, 20);
+    Matrix<double, 4, 4> A = SymmEigenDecomposition(x1, 0.00001, 20);
     Matrix<double, 4, 4> ATrans = A;
     ATrans.Transpose();
     Matrix<double, 4, 4> rst = MMMultiply(A, ATrans);
@@ -370,13 +379,48 @@ void testED4by4()
     A.Show();
     puts("rst");
     rst.Show();
-    assert(x.IsEqual(rst) == true);
+    assert(x1.IsEqual(rst) == true);
+
+    A = SymmEigenDecomposition(x2, 0.00001, 20);
+    ATrans = A;
+    ATrans.Transpose();
+    rst = MMMultiply(A, ATrans);
+    puts("A");
+    A.Show();
+    puts("rst");
+    rst.Show();
+    assert(x2.IsEqual(rst) == true);
 }
 
 void testEigenDecomposition()
 {
     testED3by3();
     testED4by4();
+}
+
+void testDGEMV()
+{
+    Matrix<double, 4, 4> A;
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            A[i][j] = i * 4 + j;
+        }
+    }
+
+    A.Show();
+
+    Vec<double, 4> y;
+    Vec<double, 4> x;
+    for (int i = 0; i < 4; i++)
+    {
+        x[i] = 1.0;
+        y[i] = 1.0;
+    }
+
+    Vec<double, 4> result = DGEMV(0.5, A, x, 0.5, y);
+    result.Show();
 }
 
 int main()
@@ -387,4 +431,6 @@ int main()
 
     testEigenValuesNaiveQR();
     testEigenDecomposition();
+
+    testDGEMV();
 }
