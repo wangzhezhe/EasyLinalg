@@ -471,6 +471,9 @@ namespace MATH_EIGHT
 
         for (int i = DIM - 1; i >= 0; --i)
         {
+            if(i<0){
+                break;
+            }
             // The values x[i+1..n-1] have already been calculated
             double s = 0;
             for (int j = i + 1; j < DIM; ++j)
@@ -598,7 +601,8 @@ namespace MATH_EIGHT
             invert8by8matrix(&m_minus_lambda_i, &m_minus_lambda_i_inv);
 
             // puts("m_minus_lambda_i_inv");
-            // matrix_show(&m_minus_lambda_i_inv);
+            printf("eigen vec %f a-lambda*I inv\n",eigen_value_array[j]);
+            matrix_show(&m_minus_lambda_i_inv);
 
             // init as 1
             for (int i = 0; i < len_eigen_vec; i++)

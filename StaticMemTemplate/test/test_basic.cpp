@@ -13,6 +13,12 @@ void testInit()
     v.InitZero();
     v.Show();
 
+
+    //init vector by fixed value
+    Vec<double, 10> v_init(1.0);
+    std::cout <<"v init is" << std::endl;
+    v_init.Show();
+
     // test matrix
     Matrix<int, 3, 3> m;
     m[0][0] = 1;

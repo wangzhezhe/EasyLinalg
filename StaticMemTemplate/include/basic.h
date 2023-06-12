@@ -15,6 +15,14 @@ public:
     static const int NUM_COMPONENTS = Size;
     T Components[NUM_COMPONENTS];
 
+    Vec(){}
+
+    Vec(T init){
+        for(uint i=0;i<this->NUM_COMPONENTS;i++){
+            this->Components[i]=init;
+        }
+    }
+
     // getting element by [] operator
     // return a reference, so the value can be updated further
     T &operator[](uint index)
@@ -166,7 +174,7 @@ public:
         }
     };
 
-    bool IsUpperTriangular(double tol)
+    bool IsUpperTriangular(double tol) const
     {
         // For now, only treat square matricies.
         if (this->NUM_COLUMNS != this->NUM_ROWS)
@@ -187,7 +195,7 @@ public:
         return true;
     }
 
-    bool IsEqual(const Matrix &t)
+    bool IsEqual(const Matrix &t, double tol=0.00001)
     {
         if (this->NUM_ROWS != t.NUM_ROWS || this->NUM_COLUMNS != t.NUM_COLUMNS)
         {
@@ -197,7 +205,7 @@ public:
         {
             for (uint j = 0; j < this->NUM_COLUMNS; j++)
             {
-                if (fabs(this->Components[i][j] - t.Components[i][j]) > 0.0001)
+                if (fabs(this->Components[i][j] - t.Components[i][j]) > tol)
                 {
                     return false;
                 }
