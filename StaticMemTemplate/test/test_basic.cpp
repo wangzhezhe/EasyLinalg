@@ -1,7 +1,6 @@
 #include <include/basic.h>
 #include <assert.h>
 
-
 void testInit()
 {
     // test vector
@@ -13,10 +12,9 @@ void testInit()
     v.InitZero();
     v.Show();
 
-
-    //init vector by fixed value
+    // init vector by fixed value
     Vec<double, 10> v_init(1.0);
-    std::cout <<"v init is" << std::endl;
+    std::cout << "v init is" << std::endl;
     v_init.Show();
 
     // test matrix
@@ -33,8 +31,47 @@ void testInit()
     m2.InitEye();
 }
 
+void testOperator()
+{
+    Matrix<int, 3, 3> m1;
+    m1.InitEye();
+    Matrix<int, 3, 3> m2;
+    m2.InitEye();
+    // operator +
+    m1 = m1 + m2;
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            if (i == j)
+            {
+                assert(m1[i][j] == 2);
+            }
+            else
+            {
+                assert(m1[i][j] == 0);
+            }
+        }
+    }
+    m1.Show();
 
+    Matrix<int, 3, 3> m3;
+    m3.InitEye();
+    //operator -
+    m2 = m2 - m3;
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            assert(m2[i][j] == 0);
+        }
+    }
+    m2.Show();
+
+    return;
+}
 int main()
 {
     testInit();
+    testOperator();
 }

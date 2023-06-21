@@ -339,9 +339,9 @@ bool SymmInvertMatrixInner(const Matrix<T, Size, Size> &m, Matrix<T, Size, Size>
     Matrix<T, Size, Size> R;
     Householder(m, Q, R);
 
-    //puts("inv q r");
-    //Q.Show();
-    //R.Show();
+    // puts("inv q r");
+    // Q.Show();
+    // R.Show();
 
     // Q*R*x=b
     // R*x = Q_t*b
@@ -355,18 +355,18 @@ bool SymmInvertMatrixInner(const Matrix<T, Size, Size> &m, Matrix<T, Size, Size>
         Matrix<T, Size, Size> Q_t = Q;
         Q_t.Transpose();
 
-        //puts("Q_t");
-        //Q_t.Show();
+        // puts("Q_t");
+        // Q_t.Show();
 
         // compute Qt*b
         Vec<T, Size> Q_tb = MMVultiply(Q_t, b);
-        //puts("Q_tb");
-        //Q_t.Show();
+        // puts("Q_tb");
+        // Q_t.Show();
 
         // using back substition to solve R*x=Q_t*b
         Vec<T, Size> x = SymmBackSubstitution(R, Q_tb);
-        //printf("colm %d \n for x\n", j);
-        //x.Show();
+        // printf("colm %d \n for x\n", j);
+        // x.Show();
 
         // putting associating colum into the jth colum of inv_m matrix
         for (uint i = 0; i < Size; i++)
@@ -374,7 +374,7 @@ bool SymmInvertMatrixInner(const Matrix<T, Size, Size> &m, Matrix<T, Size, Size>
             inv_m[i][j] = x[i];
         }
     }
-    //inv_m.Show();
+    // inv_m.Show();
     return true;
 }
 
@@ -387,6 +387,54 @@ bool SymmInvertMatrix(const Matrix<T, Size, Size> &A, Matrix<T, Size, Size> &AIn
     // if we implement different function according to the value of Size
     SymmInvertMatrixInner(A, AInv);
     return true;
+}
+
+template <typename T, uint Size>
+void SymmEigenValuesShift(const Matrix<T, Size, Size> &A, double tol, int maxIter, Vec<T, Size> &eigenValues)
+{
+    // refer to https://www.andreinc.net/2021/01/25/computing-eigenvalues-and-eigenvectors-using-qr-decomposition
+    Matrix<T, Size, Size> Ak = A;
+
+    // mat_t qq = matrix_new_eye(x->m, x->m);
+    Matrix<T, Size, Size> QQ;
+    QQ.InitEye();
+
+    Matrix<T, Size, Size> Eye;
+    Eye.InitEye();
+
+    Matrix<T, Size, Size> R, Q;
+    for (int i = 0; i < maxIter; ++i)
+    {
+        // s_k is the last item of the first diagonal
+        T s = Ak[Size - 1][Size - 1];
+        Matrix<T, Size, Size> smulI = MSCALE(s, Eye);
+        Householder(Ak - smulI, Q, R);
+        // printf("iter i %d \nR\n", i);
+        // R.Show();
+        // puts("Q");
+        // Q.Show();
+
+        // addinng smulI back
+        Ak = MMMultiply(R, Q) + smulI;
+        QQ = MMMultiply(QQ, Q);
+
+        if (Ak.IsUpperTriangular(tol))
+        {
+            break;
+        }
+    }
+
+    for (int i = 0; i < Size; i++)
+    {
+        if (fabs(Ak[i][i] - 0) < tol)
+        {
+            eigenValues[i] = 0.0;
+        }
+        else
+        {
+            eigenValues[i] = Ak[i][i];
+        }
+    }
 }
 
 template <typename T, uint Size>
@@ -472,8 +520,8 @@ Matrix<T, Size, Size> SymmEigenVectors(const Matrix<T, Size, Size> &A, const Vec
         bool invertok = SymmInvertMatrix(A_minus_lambda_i, A_minus_lambda_inv);
         assert(invertok == true);
 
-        //printf("eigen vec %f a-lambda*I inv\n", eigenValues[j]);
-        //A_minus_lambda_inv.Show();
+        // printf("eigen vec %f a-lambda*I inv\n", eigenValues[j]);
+        // A_minus_lambda_inv.Show();
 
         Vec<T, Size> bPrev;
         Vec<T, Size> bCurr;
@@ -511,9 +559,9 @@ Matrix<T, Size, Size> SymmEigenVectors(const Matrix<T, Size, Size> &A, const Vec
     return eigenVectors;
 }
 
-//The input matrix such as the covariance matrix
-//is supposed to be a symmetric positive definite matrix with all 
-//eigen values larger than 0
+// The input matrix such as the covariance matrix
+// is supposed to be a symmetric positive definite matrix with all
+// eigen values larger than 0
 template <typename T, uint Size>
 Matrix<T, Size, Size> SymmEigenDecomposition(const Matrix<T, Size, Size> &A, double tol, int maxIter)
 {
@@ -523,7 +571,7 @@ Matrix<T, Size, Size> SymmEigenDecomposition(const Matrix<T, Size, Size> &A, dou
     eigenValues.InitZero();
     SymmEigenValues(A, tol, 20, eigenValues);
 
-    //eigenValues.Show();
+    // eigenValues.Show();
 
     // solve eigen vectors
     Matrix<T, Size, Size> eigenVactors;

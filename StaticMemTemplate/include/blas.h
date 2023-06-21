@@ -1,10 +1,25 @@
 
-//supporting https://www.gnu.org/software/gsl/doc/html/blas.html
+// supporting https://www.gnu.org/software/gsl/doc/html/blas.html
 
 #ifndef EASY_LIALG_BLAS
 #define EASY_LIALG_BLAS
 
 #include "./basic.h"
+
+// x=a*x
+template <typename T, uint Size>
+Matrix<T, Size, Size> MSCALE(const T v, const Matrix<T, Size, Size> &x)
+{
+    Matrix<T, Size, Size> Mat;
+    for (uint i = 0; i < Size; i++)
+    {
+        for (uint j = 0; j < Size; j++)
+        {
+            Mat[i][j] = v * x[i][j];
+        }
+    }
+    return Mat;
+}
 
 // m = I - 2* v v^T
 template <typename T, uint Size>
@@ -114,13 +129,12 @@ Vec<T, Row> DGEMV(const T alpha, const Matrix<T, Row, Col> &A, Vec<T, Col> &x, c
     {
         for (uint j = 0; j < Col; j++)
         {
-            result[i] +=  A[i][j] * x[j];
+            result[i] += A[i][j] * x[j];
         }
-        result[i] = result[i]*alpha;
-        result[i] = result[i]+ beta * y[i];
+        result[i] = result[i] * alpha;
+        result[i] = result[i] + beta * y[i];
     }
     return result;
 }
-
 
 #endif

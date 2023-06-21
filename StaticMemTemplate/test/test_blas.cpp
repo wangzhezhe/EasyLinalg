@@ -147,12 +147,34 @@ void testAssignment()
     }
 }
 
+void testMSCALE()
+{
+    Matrix<int, 3, 3> m;
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            m[i][j] = i + j;
+        }
+    }
+    m = MSCALE(5, m);
+    //m.Show();
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            assert(m[i][j] == 5 * (i + j));
+        }
+    }
+}
+
 void testBasicOperations()
 {
     testAssignment();
     testMMVPV<3>();
     testMMVPV<4>();
     testMMVPV<8>();
+    testMSCALE();
 }
 
 template <uint Num>

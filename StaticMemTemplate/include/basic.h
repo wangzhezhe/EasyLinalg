@@ -6,7 +6,7 @@
 #include <cmath>
 #include <type_traits>
 
-//basic defination of template based matrix and vector
+// basic defination of template based matrix and vector
 
 template <typename T, uint Size>
 class Vec
@@ -15,11 +15,13 @@ public:
     static const int NUM_COMPONENTS = Size;
     T Components[NUM_COMPONENTS];
 
-    Vec(){}
+    Vec() {}
 
-    Vec(T init){
-        for(uint i=0;i<this->NUM_COMPONENTS;i++){
-            this->Components[i]=init;
+    Vec(T init)
+    {
+        for (uint i = 0; i < this->NUM_COMPONENTS; i++)
+        {
+            this->Components[i] = init;
         }
     }
 
@@ -153,6 +155,22 @@ public:
             this->Components[i] = this->Components[i] / sqrt(sum);
         }
     }
+
+    void Sort(){
+        //sort the current array 
+        //from large element to small element
+        T temp;
+        for(uint i=0;i<this->NUM_COMPONENTS;i++){
+            for(uint j=0;j<this->NUM_COMPONENTS-1-i;j++){
+                //from largest one to the smallest one
+                if(this->Components[j]<this->Components[j+1]){
+                    temp=this->Components[j];
+                    this->Components[j]=this->Components[j+1];
+                    this->Components[j+1]=temp;     
+                }
+            }
+        }
+    }
 };
 
 template <typename T, uint RowSize, uint ColSize>
@@ -195,7 +213,7 @@ public:
         return true;
     }
 
-    bool IsEqual(const Matrix &t, double tol=0.00001)
+    bool IsEqual(const Matrix &t, double tol = 0.00001)
     {
         if (this->NUM_ROWS != t.NUM_ROWS || this->NUM_COLUMNS != t.NUM_COLUMNS)
         {
@@ -226,6 +244,36 @@ public:
         assert(rowIndex >= 0);
         assert(rowIndex < NUM_ROWS);
         return this->Components[rowIndex];
+    }
+
+    Matrix &operator-(Matrix &t)
+    {
+        assert(this->NUM_ROWS == t.NUM_ROWS);
+        assert(this->NUM_COLUMNS == t.NUM_COLUMNS);
+
+        for (uint i = 0; i < this->NUM_ROWS; i++)
+        {
+            for (uint j = 0; j < this->NUM_COLUMNS; j++)
+            {
+                this->Components[i][j] = this->Components[i][j] - t.Components[i][j];
+            }
+        }
+        return *this;
+    }
+
+    Matrix &operator+(Matrix &t)
+    {
+        assert(this->NUM_ROWS == t.NUM_ROWS);
+        assert(this->NUM_COLUMNS == t.NUM_COLUMNS);
+
+        for (uint i = 0; i < this->NUM_ROWS; i++)
+        {
+            for (uint j = 0; j < this->NUM_COLUMNS; j++)
+            {
+                this->Components[i][j] = this->Components[i][j] + t.Components[i][j];
+            }
+        }
+        return *this;
     }
 
     Matrix &operator=(Matrix &t)
@@ -336,9 +384,5 @@ public:
         return vec;
     }
 };
-
-
-
-
 
 #endif
