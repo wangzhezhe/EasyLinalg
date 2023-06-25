@@ -6,9 +6,12 @@
 
 #include "./basic.h"
 
+namespace EASYLINALG
+{
+
 // x=a*x
 template <typename T, uint Size>
-Matrix<T, Size, Size> MSCALE(const T v, const Matrix<T, Size, Size> &x)
+LIAG_FUNC_MACRO Matrix<T, Size, Size> MSCALE(const T v, const Matrix<T, Size, Size> &x)
 {
     Matrix<T, Size, Size> Mat;
     for (uint i = 0; i < Size; i++)
@@ -23,7 +26,7 @@ Matrix<T, Size, Size> MSCALE(const T v, const Matrix<T, Size, Size> &x)
 
 // m = I - 2* v v^T
 template <typename T, uint Size>
-Matrix<T, Size, Size> IMINUSVVT(Vec<T, Size> &v)
+LIAG_FUNC_MACRO Matrix<T, Size, Size> IMINUSVVT(Vec<T, Size> &v)
 {
     // this member become the static const member?
     Matrix<T, Size, Size> Mat;
@@ -41,7 +44,7 @@ template <typename T,
           uint NumRow,
           uint NumCol,
           uint NumInternal>
-Matrix<T, NumRow, NumCol> MMMultiply(
+LIAG_FUNC_MACRO Matrix<T, NumRow, NumCol> MMMultiply(
     Matrix<T, NumRow, NumInternal> &leftFactor,
     Matrix<T, NumInternal, NumCol> &rightFactor)
 {
@@ -65,7 +68,7 @@ Matrix<T, NumRow, NumCol> MMMultiply(
 template <typename T,
           uint NumRow,
           uint NumCol>
-Vec<T, NumRow> MMVultiply(const Matrix<T, NumRow, NumCol> &inputM, const Vec<T, NumCol> inputV)
+LIAG_FUNC_MACRO Vec<T, NumRow> MMVultiply(const Matrix<T, NumRow, NumCol> &inputM, const Vec<T, NumCol> inputV)
 {
     Vec<T, NumRow> result;
     result.InitZero();
@@ -85,7 +88,7 @@ Vec<T, NumRow> MMVultiply(const Matrix<T, NumRow, NumCol> &inputM, const Vec<T, 
 template <typename T,
           uint NumRow,
           uint NumCol>
-Vec<T, NumRow> MMVPV(
+LIAG_FUNC_MACRO Vec<T, NumRow> MMVPV(
     Matrix<T, NumRow, NumCol> &A,
     Vec<T, NumCol> &U,
     Vec<T, NumRow> &M)
@@ -108,7 +111,7 @@ Vec<T, NumRow> MMVPV(
 
 // results = a*x + b
 template <typename T, uint Size>
-Vec<T, Size> AXPY(double a, Vec<T, Size> &x, Vec<T, Size> &b)
+LIAG_FUNC_MACRO Vec<T, Size> AXPY(double a, Vec<T, Size> &x, Vec<T, Size> &b)
 {
     Vec<T, Size> result;
     for (uint i = 0; i < Size; i++)
@@ -121,7 +124,7 @@ Vec<T, Size> AXPY(double a, Vec<T, Size> &x, Vec<T, Size> &b)
 // A is matrix, x and y are vectors
 //  results =alpha*A*x+beta*y
 template <typename T, uint Row, uint Col>
-Vec<T, Row> DGEMV(const T alpha, const Matrix<T, Row, Col> &A, Vec<T, Col> &x, const T beta, const Vec<T, Row> &y)
+LIAG_FUNC_MACRO Vec<T, Row> DGEMV(const T alpha, const Matrix<T, Row, Col> &A, Vec<T, Col> &x, const T beta, const Vec<T, Row> &y)
 {
     Vec<T, Row> result;
     result.InitZero();
@@ -137,4 +140,5 @@ Vec<T, Row> DGEMV(const T alpha, const Matrix<T, Row, Col> &A, Vec<T, Col> &x, c
     return result;
 }
 
+}
 #endif

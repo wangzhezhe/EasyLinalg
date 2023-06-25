@@ -2,6 +2,9 @@
 #include <include/eigen.h>
 #include <assert.h>
 
+using namespace EASYLINALG;
+
+
 double in33_0[3][3] = {
     {1, -1, 4},
     {1, 4, -2},

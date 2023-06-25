@@ -1,6 +1,8 @@
 #include <include/basic.h>
 #include <assert.h>
 
+using namespace EASYLINALG;
+
 void testInit()
 {
     // test vector

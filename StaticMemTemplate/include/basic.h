@@ -6,7 +6,14 @@
 #include <cmath>
 #include <type_traits>
 
+namespace EASYLINALG
+{
+
 // basic defination of template based matrix and vector
+
+// set as necessary header as needed
+// such as one using on GPU
+#define LIAG_FUNC_MACRO __attribute__((visibility("default")))
 
 template <typename T, uint Size>
 class Vec
@@ -15,9 +22,9 @@ public:
     static const int NUM_COMPONENTS = Size;
     T Components[NUM_COMPONENTS];
 
-    Vec() {}
+    LIAG_FUNC_MACRO Vec() {}
 
-    Vec(T init)
+    LIAG_FUNC_MACRO Vec(T init)
     {
         for (uint i = 0; i < this->NUM_COMPONENTS; i++)
         {
@@ -27,7 +34,7 @@ public:
 
     // getting element by [] operator
     // return a reference, so the value can be updated further
-    T &operator[](uint index)
+    LIAG_FUNC_MACRO T &operator[](uint index)
     {
         assert(index >= 0);
         assert(index < this->NUM_COMPONENTS);
@@ -56,14 +63,14 @@ public:
 
     still curious about results here, some cases, the object that call the [] is a const object
     */
-    const T &operator[](uint index) const
+    LIAG_FUNC_MACRO const T &operator[](uint index) const
     {
         assert(index >= 0);
         assert(index < this->NUM_COMPONENTS);
         return this->Components[index];
     }
 
-    Vec &operator=(const Vec &t)
+    LIAG_FUNC_MACRO Vec &operator=(const Vec &t)
     {
         assert(this->NUM_COMPONENTS == t.NUM_COMPONENTS);
         for (uint i = 0; i < this->NUM_COMPONENTS; i++)
@@ -73,7 +80,7 @@ public:
         return *this;
     }
 
-    Vec &operator=(Vec &t)
+    LIAG_FUNC_MACRO Vec &operator=(Vec &t)
     {
         assert(this->NUM_COMPONENTS == t.NUM_COMPONENTS);
         for (uint i = 0; i < this->NUM_COMPONENTS; i++)
@@ -86,7 +93,7 @@ public:
     // this is only used for single vector
     // the vector can be in inserted form
     // so we do not set the init value of vector as zero
-    void InitZero()
+    LIAG_FUNC_MACRO void InitZero()
     {
         for (int i = 0; i < this->NUM_COMPONENTS; i++)
         {
@@ -94,7 +101,7 @@ public:
         }
     }
 
-    void Show()
+    LIAG_FUNC_MACRO void Show()
     {
         for (int i = 0; i < this->NUM_COMPONENTS; i++)
         {
@@ -104,7 +111,7 @@ public:
     }
 
     // ||x||
-    double GetNorm()
+    LIAG_FUNC_MACRO double GetNorm()
     {
         double sum = 0;
         for (uint i = 0; i < this->NUM_COMPONENTS; i++)
@@ -113,7 +120,7 @@ public:
     }
 
     // y = y/d
-    void Div(double d)
+    LIAG_FUNC_MACRO void Div(double d)
     {
         // if the d is a value close to zero
         // just set results to 0
@@ -125,7 +132,7 @@ public:
         return;
     }
 
-    bool Equal(const Vec &t)
+    LIAG_FUNC_MACRO bool Equal(const Vec &t)
     {
         if (this->NUM_COMPONENTS != t.NUM_COMPONENTS)
         {
@@ -142,7 +149,7 @@ public:
         return true;
     }
 
-    void Normalize()
+    LIAG_FUNC_MACRO void Normalize()
     {
         double sum = 0;
         for (uint i = 0; i < this->NUM_COMPONENTS; i++)
@@ -156,7 +163,7 @@ public:
         }
     }
 
-    void Sort(){
+    LIAG_FUNC_MACRO void Sort(){
         //sort the current array 
         //from large element to small element
         T temp;
@@ -181,7 +188,7 @@ public:
     static constexpr int NUM_COLUMNS = ColSize;
     Vec<Vec<T, NUM_COLUMNS>, NUM_ROWS> Components;
 
-    Matrix()
+    LIAG_FUNC_MACRO Matrix()
     {
         for (uint i = 0; i < this->NUM_ROWS; i++)
         {
@@ -192,7 +199,7 @@ public:
         }
     };
 
-    bool IsUpperTriangular(double tol) const
+    LIAG_FUNC_MACRO bool IsUpperTriangular(double tol) const
     {
         // For now, only treat square matricies.
         if (this->NUM_COLUMNS != this->NUM_ROWS)
@@ -213,7 +220,7 @@ public:
         return true;
     }
 
-    bool IsEqual(const Matrix &t, double tol = 0.00001)
+    LIAG_FUNC_MACRO bool IsEqual(const Matrix &t, double tol = 0.00001)
     {
         if (this->NUM_ROWS != t.NUM_ROWS || this->NUM_COLUMNS != t.NUM_COLUMNS)
         {
@@ -232,21 +239,21 @@ public:
         return true;
     }
 
-    Vec<T, NUM_COLUMNS> &operator[](uint rowIndex)
+    LIAG_FUNC_MACRO Vec<T, NUM_COLUMNS> &operator[](uint rowIndex)
     {
         assert(rowIndex >= 0);
         assert(rowIndex < NUM_ROWS);
         return this->Components[rowIndex];
     }
 
-    const Vec<T, NUM_COLUMNS> &operator[](uint rowIndex) const
+    LIAG_FUNC_MACRO const Vec<T, NUM_COLUMNS> &operator[](uint rowIndex) const
     {
         assert(rowIndex >= 0);
         assert(rowIndex < NUM_ROWS);
         return this->Components[rowIndex];
     }
 
-    Matrix &operator-(Matrix &t)
+    LIAG_FUNC_MACRO Matrix &operator-(Matrix &t)
     {
         assert(this->NUM_ROWS == t.NUM_ROWS);
         assert(this->NUM_COLUMNS == t.NUM_COLUMNS);
@@ -261,7 +268,7 @@ public:
         return *this;
     }
 
-    Matrix &operator+(Matrix &t)
+    LIAG_FUNC_MACRO Matrix &operator+(Matrix &t)
     {
         assert(this->NUM_ROWS == t.NUM_ROWS);
         assert(this->NUM_COLUMNS == t.NUM_COLUMNS);
@@ -276,7 +283,7 @@ public:
         return *this;
     }
 
-    Matrix &operator=(Matrix &t)
+    LIAG_FUNC_MACRO Matrix &operator=(Matrix &t)
     {
         assert(this->NUM_ROWS == t.NUM_ROWS);
         assert(this->NUM_COLUMNS == t.NUM_COLUMNS);
@@ -291,7 +298,7 @@ public:
         return *this;
     }
 
-    Matrix &operator=(const Matrix &t)
+    LIAG_FUNC_MACRO Matrix &operator=(const Matrix &t)
     {
         assert(this->NUM_ROWS == t.NUM_ROWS);
         assert(this->NUM_COLUMNS == t.NUM_COLUMNS);
@@ -306,7 +313,7 @@ public:
         return *this;
     }
 
-    void InitEye()
+    LIAG_FUNC_MACRO void InitEye()
     {
         assert(this->NUM_ROWS == this->NUM_COLUMNS);
         for (int i = 0; i < this->NUM_ROWS; i++)
@@ -325,7 +332,7 @@ public:
         }
     }
 
-    void Show()
+    LIAG_FUNC_MACRO void Show()
     {
         for (int i = 0; i < this->NUM_ROWS; i++)
         {
@@ -338,7 +345,7 @@ public:
         printf("\n");
     }
 
-    void Transpose()
+    LIAG_FUNC_MACRO void Transpose()
     {
         for (int i = 0; i < this->NUM_ROWS; i++)
         {
@@ -352,7 +359,7 @@ public:
     }
 
     // only works for the symmetric matrix
-    Matrix GetMinor(uint d)
+    LIAG_FUNC_MACRO Matrix GetMinor(uint d)
     {
         assert(this->NUM_ROWS == this->NUM_COLUMNS);
         Matrix minor;
@@ -376,7 +383,7 @@ public:
     }
 
     // take c-th column of matrix, put in vector
-    Vec<T, NUM_COLUMNS> GetColum(uint c)
+    LIAG_FUNC_MACRO Vec<T, NUM_COLUMNS> GetColum(uint c)
     {
         Vec<T, NUM_COLUMNS> vec;
         for (uint i = 0; i < this->NUM_ROWS; i++)
@@ -384,5 +391,7 @@ public:
         return vec;
     }
 };
+
+}
 
 #endif

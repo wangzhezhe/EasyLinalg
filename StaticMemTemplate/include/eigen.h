@@ -6,10 +6,13 @@
 #include "./basic.h"
 #include "./blas.h"
 
+namespace EASYLINALG
+{
+
 template <typename T,
           uint NumRow,
           uint NumCol>
-void Householder(
+LIAG_FUNC_MACRO void Householder(
     const Matrix<T, NumRow, NumCol> &A,
     Matrix<T, NumRow, NumCol> &Q,
     Matrix<T, NumRow, NumCol> &R)
@@ -107,7 +110,7 @@ void Householder(
 }
 
 template <typename T>
-bool SymmInvertMatrixInner(const Matrix<T, 3, 3> &m, Matrix<T, 3, 3> &inv_m)
+LIAG_FUNC_MACRO bool SymmInvertMatrixInner(const Matrix<T, 3, 3> &m, Matrix<T, 3, 3> &inv_m)
 {
     inv_m[0][0] = m[1][1] * m[2][2] - m[1][2] * m[2][1];
 
@@ -150,7 +153,7 @@ bool SymmInvertMatrixInner(const Matrix<T, 3, 3> &m, Matrix<T, 3, 3> &inv_m)
 }
 
 template <typename T>
-bool SymmInvertMatrixInner(const Matrix<T, 4, 4> &m, Matrix<T, 4, 4> &inv_m)
+LIAG_FUNC_MACRO bool SymmInvertMatrixInner(const Matrix<T, 4, 4> &m, Matrix<T, 4, 4> &inv_m)
 {
     inv_m[0][0] = m[1][1] * m[2][2] * m[3][3] -
                   m[1][1] * m[2][3] * m[3][2] -
@@ -292,7 +295,7 @@ bool SymmInvertMatrixInner(const Matrix<T, 4, 4> &m, Matrix<T, 4, 4> &inv_m)
 // refer to
 // https://www.cs.upc.edu/~jordicf/Teaching/programming/pdf4/MATH03_Gaussian-4slides.pdf
 template <typename T, uint Size>
-Vec<T, Size> SymmBackSubstitution(const Matrix<T, Size, Size> &A, const Vec<T, Size> &b)
+LIAG_FUNC_MACRO Vec<T, Size> SymmBackSubstitution(const Matrix<T, Size, Size> &A, const Vec<T, Size> &b)
 {
     Vec<double, Size> x(0.0);
     bool ifUpper = A.IsUpperTriangular(0.00001);
@@ -330,7 +333,7 @@ Vec<T, Size> SymmBackSubstitution(const Matrix<T, Size, Size> &A, const Vec<T, S
 // refer to https://inst.eecs.berkeley.edu/~ee127/sp21/livebook/l_lineqs_solving.html
 // computing the A_inv by solving A*A_inv=I computing each colum of A_inv each time
 template <typename T, uint Size>
-bool SymmInvertMatrixInner(const Matrix<T, Size, Size> &m, Matrix<T, Size, Size> &inv_m)
+LIAG_FUNC_MACRO bool SymmInvertMatrixInner(const Matrix<T, Size, Size> &m, Matrix<T, Size, Size> &inv_m)
 {
     // TODO return false for singular matrix
 
@@ -380,7 +383,7 @@ bool SymmInvertMatrixInner(const Matrix<T, Size, Size> &m, Matrix<T, Size, Size>
 
 template <typename T,
           uint Size>
-bool SymmInvertMatrix(const Matrix<T, Size, Size> &A, Matrix<T, Size, Size> &AInv)
+LIAG_FUNC_MACRO bool SymmInvertMatrix(const Matrix<T, Size, Size> &A, Matrix<T, Size, Size> &AInv)
 {
 
     // it seems there is issue
@@ -390,7 +393,7 @@ bool SymmInvertMatrix(const Matrix<T, Size, Size> &A, Matrix<T, Size, Size> &AIn
 }
 
 template <typename T, uint Size>
-void SymmEigenValuesShift(const Matrix<T, Size, Size> &A, double tol, int maxIter, Vec<T, Size> &eigenValues)
+LIAG_FUNC_MACRO void SymmEigenValuesShift(const Matrix<T, Size, Size> &A, double tol, int maxIter, Vec<T, Size> &eigenValues)
 {
     // refer to https://www.andreinc.net/2021/01/25/computing-eigenvalues-and-eigenvectors-using-qr-decomposition
     Matrix<T, Size, Size> Ak = A;
@@ -438,7 +441,7 @@ void SymmEigenValuesShift(const Matrix<T, Size, Size> &A, double tol, int maxIte
 }
 
 template <typename T, uint Size>
-void SymmEigenValues(const Matrix<T, Size, Size> &A, double tol, int maxIter, Vec<T, Size> &eigenValues)
+LIAG_FUNC_MACRO void SymmEigenValues(const Matrix<T, Size, Size> &A, double tol, int maxIter, Vec<T, Size> &eigenValues)
 {
     // refer to https://www.andreinc.net/2021/01/25/computing-eigenvalues-and-eigenvectors-using-qr-decomposition
     // mat_t ak = *x;
@@ -483,7 +486,7 @@ void SymmEigenValues(const Matrix<T, Size, Size> &A, double tol, int maxIter, Ve
 // using inverse itertaion to compute the eigen vectors
 // https://en.wikipedia.org/wiki/Inverse_iteration
 template <typename T, uint Size>
-Matrix<T, Size, Size> SymmEigenVectors(const Matrix<T, Size, Size> &A, const Vec<T, Size> &eigenValues, int maxIter)
+LIAG_FUNC_MACRO Matrix<T, Size, Size> SymmEigenVectors(const Matrix<T, Size, Size> &A, const Vec<T, Size> &eigenValues, int maxIter)
 {
 
     Matrix<T, Size, Size> eigenVectors;
@@ -563,7 +566,7 @@ Matrix<T, Size, Size> SymmEigenVectors(const Matrix<T, Size, Size> &A, const Vec
 // is supposed to be a symmetric positive definite matrix with all
 // eigen values larger than 0
 template <typename T, uint Size>
-Matrix<T, Size, Size> SymmEigenDecomposition(const Matrix<T, Size, Size> &A, double tol, int maxIter)
+LIAG_FUNC_MACRO Matrix<T, Size, Size> SymmEigenDecomposition(const Matrix<T, Size, Size> &A, double tol, int maxIter)
 {
 
     // solve eigen values
@@ -609,6 +612,8 @@ Matrix<T, Size, Size> SymmEigenDecomposition(const Matrix<T, Size, Size> &A, dou
     Matrix<T, Size, Size> decompA;
     decompA = MMMultiply(eigenVactors, diag);
     return decompA;
+}
+
 }
 
 #endif
