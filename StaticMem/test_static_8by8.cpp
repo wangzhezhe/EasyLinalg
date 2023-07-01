@@ -16,6 +16,16 @@ double mat_0[8][8] = {
     {0, 1, 0, 1, 0, 1, 7, 1},
     {1, 0, 1, 0, 1, 0, 1, 8}};
 
+double mat_3[8][8] = {
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 101105.3750000, -4151.5576172, 3730.3315430, -22321.6738281},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, -4151.5576172, 15331.9228516, 3638.2165527, 2688.6047363},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 3730.3315430, 3638.2165527, 33748.2148438, -14399.9931641},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, -22321.6738281, 2688.6047363, -14399.9931641, 97228.0156250}};
+
 int equal_double(double a, double b)
 {
     if (fabs(a - b) < 0.0001)
@@ -241,7 +251,8 @@ void test_eigen_vectors_8by8()
             // there are some accumulated errors
             // we have three digit precisions
             // how to improve the precision?
-            if (fabs(avx.v[i] - eigenvct.v[i]) > 0.01){
+            if (fabs(avx.v[i] - eigenvct.v[i]) > 0.01)
+            {
                 printf("eigen value %f two number %f %f\n", eigenvalue, avx.v[i], eigenvct.v[i]);
                 assert(false);
             }
@@ -252,17 +263,17 @@ void test_eigen_vectors_decomposition()
 {
     printf("---test_eigen_vectors_decomposition\n");
 
-    int dim = 8;
-    mat_t x;
+    mat_t x3;
+    const int dim=8;
     for (int i = 0; i < dim; i++)
     {
         for (int j = 0; j < dim; j++)
         {
-            x.v[i][j] = mat_0[i][j];
+            x3.v[i][j] = mat_3[i][j];
         }
     }
 
-    mat_t A = eigen_vector_decomposition(&x);
+    mat_t A = eigen_vector_decomposition(&x3);
 
     mat_t A_trans = A;
     matrix_transpose(&A_trans);
@@ -274,7 +285,7 @@ void test_eigen_vectors_decomposition()
     puts("rst");
     matrix_show(&rst);
 
-    assert(equal_matrix(&rst, &x) == 1);
+    assert(equal_matrix(&rst, &x3) == 1);
 }
 
 void test_basic_operations()
@@ -312,7 +323,7 @@ int main()
     test_invert_8by8matrix();
     test_eigen_values_8by8();
     test_eigen_vectors_8by8();
-    //this can only work for the case where eigen value is >=0
-    //test_eigen_vectors_decomposition();
+    // this can only work for the case where eigen value is >=0
+    test_eigen_vectors_decomposition();
     return 0;
 }

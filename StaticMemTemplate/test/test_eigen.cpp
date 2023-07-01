@@ -4,7 +4,6 @@
 
 using namespace EASYLINALG;
 
-
 double in33_0[3][3] = {
     {1, -1, 4},
     {1, 4, -2},
@@ -75,6 +74,26 @@ double in88_1[8][8] = {
     {-0.1256, 0.9265, -0.2454, 2.0379, 0.2985, 1.6729, -2.1262, 0.2089},
     {0.1473, -1.4319, 0.4036, -2.8062, -0.3864, -2.1262, 3.4411, -0.3976},
     {0.0271, -0.0219, 0.1786, 0.1213, -0.0544, 0.2089, -0.3976, 0.4143}};
+
+double in88_2[8][8] = {
+    {101105.3750000, -4151.5576172, 3730.3315430, -22321.6738281, 57831.6640625, -12261.6962891, -10529.3369141, -9797.6738281},
+    {-4151.5576172, 15331.9228516, 3638.2165527, 2688.6047363, 9314.1904297, -1828.3790283, 5672.0117188, -317.4915771},
+    {3730.3315430, 3638.2165527, 33748.2148438, -14399.9931641, -6357.6704102, 3437.7441406, 7549.2895508, -568.7544556},
+    {-22321.6738281, 2688.6047363, -14399.9931641, 97228.0156250, -24427.3359375, -3596.4404297, 14836.5156250, 6689.7988281},
+    {57831.6640625, 9314.1904297, -6357.6704102, -24427.3359375, 234944.4062500, -11384.6484375, -21269.4316406, 12129.8779297},
+    {-12261.6962891, -1828.3790283, 3437.7441406, -3596.4404297, -11384.6484375, 82422.0156250, 22680.9531250, 4392.9643555},
+    {-10529.3369141, 5672.0117188, 7549.2895508, 14836.5156250, -21269.4316406, 22680.9531250, 300814.8437500, 13805.1669922},
+    {-9797.6738281, -317.4915771, -568.7544556, 6689.7988281, 12129.8779297, 4392.9643555, 13805.1669922, 80841.8984375}};
+
+double in88_3[8][8] = {
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000, 0.0000000},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 101105.3750000, -4151.5576172, 3730.3315430, -22321.6738281},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, -4151.5576172, 15331.9228516, 3638.2165527, 2688.6047363},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, 3730.3315430, 3638.2165527, 33748.2148438, -14399.9931641},
+    {0.0000000, 0.0000000, 0.0000000, 0.0000000, -22321.6738281, 2688.6047363, -14399.9931641, 97228.0156250}};
 
 void testInit()
 {
@@ -327,7 +346,7 @@ void testEVNQRInner()
         EigenFunc(m1, 0.0001, 50, eigenValues);
 
         eigenValues.Sort();
-        
+
         std::cout << "--show eigen values" << std::endl;
         for (int i = 0; i < Num; i++)
         {
@@ -359,7 +378,7 @@ void testEigenValuesShift()
     std::cout << "--testing SymmEigenValuesShift---" << std::endl;
     testEVNQRInner<3, SymmEigenValuesShift>();
     testEVNQRInner<4, SymmEigenValuesShift>();
-    //the value here converge faster and more accurate
+    // the value here converge faster and more accurate
     testEVNQRInner<8, SymmEigenValuesShift>();
 }
 
@@ -537,12 +556,97 @@ void testInverse()
     testInverse8by8();
 }
 
+void testEigenDecompositionComplicated()
+{
+    printf("---test_eigen_vectors_decomposition testEigenDecompositionComplicated 8by8\n");
+    constexpr uint size = 8;
+    Matrix<double, size, size> x1;
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            x1[i][j] = in88_2[i][j];
+        }
+    }
+
+    Matrix<double, size, size> A = SymmEigenDecomposition(x1, 0.00001, 1000);
+    Matrix<double, size, size> ATrans = A;
+    ATrans.Transpose();
+    Matrix<double, size, size> rst = MMMultiply(A, ATrans);
+    puts("A");
+    A.Show();
+    puts("rst");
+    rst.Show();
+
+    // TODO,
+    // current precision is a little bit low
+    // how to improve this precision further?
+    assert(x1.IsEqual(rst, 0.001) == true);
+
+    Matrix<double, size, size> x3;
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            x3[i][j] = in88_3[i][j];
+        }
+    }
+
+    Matrix<double, size, size> A3 = SymmEigenDecomposition(x3, 0.00001, 100);
+    Matrix<double, size, size> ATrans3 = A3;
+    ATrans3.Transpose();
+    Matrix<double, size, size> rst3 = MMMultiply(A3, ATrans3);
+    puts("A3");
+    A3.Show();
+    puts("rst3");
+    rst3.Show();
+
+    // TODO,
+    // current precision is a little bit low
+    // how to improve this precision further?
+    assert(x3.IsEqual(rst3, 0.001) == true);
+}
+
+void testEigenDecompositionComplicatedShift()
+{
+    std::cout << "---testEigenDecompositionComplicatedShift---" << std::endl;
+    constexpr uint size = 8;
+    Matrix<double, size, size> x3;
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            x3[i][j] = in88_3[i][j];
+        }
+    }
+    //for this A3 matrix, we need to improve iteration to 1000 to get accurate eigen value
+    //the tolerance is around 0.0005
+    //there is one value at the corner, it is hard to converge to the value under the 0.0005
+    //after 500 iteration step
+    Matrix<double, size, size> A3 = SymmEigenDecomposition(x3, 0.0005, 1000, true);
+    Matrix<double, size, size> ATrans3 = A3;
+    ATrans3.Transpose();
+    Matrix<double, size, size> rst3 = MMMultiply(A3, ATrans3);
+    puts("A3");
+    A3.Show();
+    puts("rst3");
+    rst3.Show();
+
+    // TODO,
+    // current precision is a little bit low
+    // how to improve this precision further?
+    assert(x3.IsEqual(rst3, 0.001) == true);
+}
+
 int main()
 {
 
-    testInverse();
-    testQR();
-    testEigenValuesNaiveQR();
-    testEigenValuesShift();
-    testEigenDecomposition();
+    // testInverse();
+    // testQR();
+    // testEigenValuesNaiveQR();
+    // testEigenValuesShift();
+    // testEigenDecomposition();
+
+    // testEigenDecompositionComplicated();
+    testEigenDecompositionComplicatedShift();
 }

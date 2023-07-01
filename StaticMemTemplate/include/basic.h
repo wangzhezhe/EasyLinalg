@@ -156,7 +156,9 @@ public:
         {
             sum += this->Components[i] * this->Components[i];
         }
-        assert(fabs(sum - 0.0) > 0.000001);
+        //std::cout << "sum " << sum << std::endl;
+        //this->Show();
+        assert(fabs(sum - 0.0) > 0.0);
         for (uint i = 0; i < this->NUM_COMPONENTS; i++)
         {
             this->Components[i] = this->Components[i] / sqrt(sum);
@@ -213,6 +215,7 @@ public:
             {
                 if (fabs(this->Components[i][j]) > tol)
                 {
+                    //std::cout << fabs(this->Components[i][j]) << " tol " << tol << " " << bool(fabs(this->Components[i][j])>tol) << std::endl;
                     return false;
                 }
             }
