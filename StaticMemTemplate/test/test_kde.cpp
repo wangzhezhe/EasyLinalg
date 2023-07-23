@@ -42,15 +42,28 @@ void testKDE()
     }
 
     double x0 = 10.0;
-    double g0 = KDE1D(v,x0);
+    double g0 = KDE1D(v, x0);
     double x1 = 15.0;
-    double g1 = KDE1D(v,x1);
+    double g1 = KDE1D(v, x1);
     double x2 = 20.0;
-    double g2 = KDE1D(v,x2);
+    double g2 = KDE1D(v, x2);
 
     assert(fabs(g0 - 0.02197104) < 0.00001);
     assert(fabs(g1 - 0.02659957) < 0.00001);
     assert(fabs(g2 - 0.02839158) < 0.00001);
+}
+
+void testKDECDF1D()
+{
+    Vec<double, 6> v(0);
+    for (int i = 0; i < 6; i++)
+    {
+        v[i] = testArray[i];
+    }
+
+    double cdfValue = KDECDF1D(v, 30);
+
+    std::cout << "cdfValue " << cdfValue << std::endl;
 }
 
 int main()
@@ -58,4 +71,5 @@ int main()
     testBandwidthScott();
     testKernel();
     testKDE();
+    testKDECDF1D();
 }
