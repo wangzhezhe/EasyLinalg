@@ -1,68 +1,9 @@
 #include <include/basic.h>
 #include <include/eigen.h>
+#include "test_data.h"
 #include <assert.h>
 
 using namespace EASYLINALG;
-
-double in33_0[3][3] = {
-    {1, -1, 4},
-    {1, 4, -2},
-    {1, 4, 2}};
-
-double in33_1[3][3] = {
-    {0.20, 0.60, 0.40},
-    {0.60, 1.80, 1.20},
-    {0.40, 1.20, 0.80}};
-
-double in33_2[3][3] = {
-    {1.0, 3.0, 7.0},
-    {3.0, 2.0, 6.0},
-    {7.0, 6.0, 5.0}};
-
-double in33_3[3][3] = {
-    {0.0, 0.0, 0.0},
-    {0.0, 20.0, 60.0},
-    {0.0, 60.0, 180.0}};
-
-double in44_0[4][4] = {
-    {1, -1, 4, 1},
-    {1, 4, -2, 1},
-    {1, 4, 2, 1},
-    {1, -1, 0, 1}};
-
-double in44_1[4][4] = {
-    {0.20, 0.60, 0.40, 0.80},
-    {0.60, 1.80, 1.20, 2.40},
-    {0.40, 1.20, 0.80, 1.60},
-    {0.80, 2.40, 1.60, 3.20}};
-
-double in44_2[4][4] = {
-    {1.0, 3.0, 7.0, 8.0},
-    {3.0, 2.0, 6.0, 7.0},
-    {7.0, 6.0, 5.0, 6.0},
-    {8.0, 7.0, 6.0, 5.0}};
-
-double in44_3[4][4] = {
-    {0.0, 0.0, 0.0, 0.0},
-    {0.0, 20.0, 60.0, 40.0},
-    {0.0, 60.0, 180.0, 120.0},
-    {0.0, 40.0, 120.0, 80.0}};
-
-double in44_4[4][4] = {
-    {0.0024507, 0.0026104, 0.0019078, 0.0025373},
-    {0.0026104, 0.0028755, 0.0020373, 0.0027783},
-    {0.0019078, 0.0020373, 0.0015548, 0.0020305},
-    {0.0025373, 0.0027783, 0.0020305, 0.0027494}};
-
-double in88_0[8][8] = {
-    {1, 1, 0, 1, 0, 1, 0, 1},
-    {1, 2, 1, 0, 1, 0, 1, 0},
-    {0, 1, 3, 1, 0, 1, 0, 1},
-    {1, 0, 1, 4, 1, 0, 1, 0},
-    {0, 1, 0, 1, 5, 1, 0, 1},
-    {1, 0, 1, 0, 1, 6, 1, 0},
-    {0, 1, 0, 1, 0, 1, 7, 1},
-    {1, 0, 1, 0, 1, 0, 1, 8}};
 
 void testInit()
 {
@@ -160,7 +101,7 @@ void testMSCALE()
         }
     }
     m = MSCALE(5, m);
-    //m.Show();
+    // m.Show();
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
@@ -170,6 +111,57 @@ void testMSCALE()
     }
 }
 
+void testVMMultiply()
+{
+    std::cout << "---testVMMultiply---" << std::endl;
+    Matrix<int, 3, 4> m;
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            m[i][j] = in34_0[i][j];
+        }
+    }
+
+    Vec<int, 3> v;
+    v[0] = 1;
+    v[1] = 1;
+    v[2] = 1;
+    auto res = VMMultiply(v, m);
+
+    assert(res.NUM_COMPONENTS == 4);
+    assert(res[0] == 15);
+    assert(res[1] == 18);
+    assert(res[2] == 21);
+    assert(res[3] == 24);
+    std::cout << "---testVMMultiply ok---" << std::endl;
+}
+
+void testMVMultiply()
+{
+    std::cout << "---testMVMultiply---" << std::endl;
+    Matrix<int, 3, 4> m;
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            m[i][j] = in34_0[i][j];
+        }
+    }
+
+    Vec<int, 4> v;
+    v[0] = 1;
+    v[1] = 1;
+    v[2] = 1;
+    v[3] = 1;
+    auto res = MVMultiply(m, v);
+
+    assert(res[0] == 10);
+    assert(res[1] == 26);
+    assert(res[2] == 42);
+    std::cout << "---testMVMultiply ok---" << std::endl;
+}
+
 void testBasicOperations()
 {
     testAssignment();
@@ -177,12 +169,13 @@ void testBasicOperations()
     testMMVPV<4>();
     testMMVPV<8>();
     testMSCALE();
+    testVMMultiply();
+    testMVMultiply();
 }
 
 template <uint Num>
 void testQRInner()
 {
-
     printf("---basic_qr_test\n");
     // mat_t R, Q;
     Matrix<double, Num, Num> x;
@@ -424,6 +417,7 @@ void testEigenDecomposition()
 
 void testDGEMV()
 {
+    std::cout << "---testDGEMV---" << std::endl;
     Matrix<double, 4, 4> A;
     for (int i = 0; i < 4; i++)
     {
@@ -433,7 +427,7 @@ void testDGEMV()
         }
     }
 
-    A.Show();
+    // A.Show();
 
     Vec<double, 4> y;
     Vec<double, 4> x;
@@ -444,7 +438,14 @@ void testDGEMV()
     }
 
     Vec<double, 4> result = DGEMV(0.5, A, x, 0.5, y);
-    result.Show();
+    // result.Show();
+
+    assert(fabs(result[0] - 3.5) < 0.00001);
+    assert(fabs(result[1] - 11.5) < 0.00001);
+    assert(fabs(result[2] - 19.5) < 0.00001);
+    assert(fabs(result[3] - 27.5) < 0.00001);
+
+    std::cout << "---testDGEMV ok---" << std::endl;
 }
 
 int main()

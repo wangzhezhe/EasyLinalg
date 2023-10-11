@@ -33,7 +33,7 @@ void testInit()
     m2.InitEye();
 }
 
-void testOperator()
+void testOperatorMatrix()
 {
     Matrix<int, 3, 3> m1;
     m1.InitEye();
@@ -59,7 +59,7 @@ void testOperator()
 
     Matrix<int, 3, 3> m3;
     m3.InitEye();
-    //operator -
+    // operator -
     m2 = m2 - m3;
     for (int i = 0; i < 3; i++)
     {
@@ -72,8 +72,44 @@ void testOperator()
 
     return;
 }
+
+void testOperatorVector()
+{
+    // test vector
+    Vec<double, 3> v1;
+    for (int i = 0; i < 3; i++)
+    {
+        v1[i] = 2.0;
+    }
+    Vec<double, 3> v2;
+    for (int i = 0; i < 3; i++)
+    {
+        v2[i] = 3.0;
+    }
+
+    // vector times vector
+    double vdot = v1.dotp(v2);
+    assert(fabs(vdot - 18.0) < 0.00001);
+
+    // operator + and -
+    // which will create a new vector
+
+    auto vadd = v1 + v2;
+    for (int i = 0; i < 3; i++)
+    {
+        assert(fabs(vadd[i] - 5.0) < 0.00001);
+    }
+
+    auto vminus = v1 - v2;
+    for (int i = 0; i < 3; i++)
+    {
+        assert(fabs(vminus[i] - (-1.0)) < 0.00001);
+    }
+}
+
 int main()
 {
     testInit();
-    testOperator();
+    testOperatorMatrix();
+    testOperatorVector();
 }

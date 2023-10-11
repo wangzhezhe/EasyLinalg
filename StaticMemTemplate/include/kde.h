@@ -1,7 +1,7 @@
 
 
-#ifndef EASY_LIALG_EIGEN
-#define EASY_LIALG_EIGEN
+#ifndef EASY_LIALG_KDE
+#define EASY_LIALG_KDE
 
 #include "./basic.h"
 #include "./blas.h"
@@ -46,26 +46,27 @@ namespace EASYLINALG
     // pdf
     // f(x) = 1/nh sum K( (x-x_i)/h )
     // cdf t= (x-x_i)/h
-    // F(t<X) = F( (x-x_i)/h<X )ccbdgnlkvhujhdeefnbtuuervgkffighiivivcufi
+    // F(t<X) = F( (x-x_i)/h<X )
 
     // the input value X means
     // that we want to caculate the function where F(x<X)
     template <typename T, uint Size>
     LIAG_FUNC_MACRO double KDECDF1D(const Vec<T, Size> &inputSample, float X, float bandWidth = 0.0)
     {
-        //float h = BandWidthScott(inputSample);
-        float h = 1.0;
-        std::cout << "h is " << h << std::endl;
+        float h = BandWidthScott(inputSample);
+        //float h = 1.0;
+        //std::cout << "h is " << h << std::endl;
         double Phi = 0;
         for (int i = 0; i < inputSample.NUM_COMPONENTS; i++)
         {
             double t = (X-inputSample[i])/h;
-            std::cout << "t " << t << std::endl;
+            //std::cout << "t " << t << std::endl;
+            // for cuda math function, there is erf
             double phi = 0.5 * (1 + std::erf(t / std::sqrt(2)));
-            std::cout << "phi " << phi << std::endl;
+            //std::cout << "phi " << phi << std::endl;
             Phi = Phi + phi;
         }
-        Phi = Phi / (inputSample.NUM_COMPONENTS * h);
+        Phi = Phi / (inputSample.NUM_COMPONENTS );
         return Phi;
     }
 }

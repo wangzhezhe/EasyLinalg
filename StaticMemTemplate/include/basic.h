@@ -31,6 +31,30 @@ namespace EASYLINALG
                 this->Components[i] = init;
             }
         }
+        // TODO
+        // the += operator should use the original vector
+        // the single + or - should just allocate a new vector
+        LIAG_FUNC_MACRO Vec<T,Size> operator+(const Vec &t) const
+        {
+            assert(this->NUM_COMPONENTS == t.NUM_COMPONENTS);
+            Vec<T,Size> result;
+            for (uint i = 0; i < this->NUM_COMPONENTS; i++)
+            {
+                result[i] = this->Components[i] + t.Components[i];
+            }
+            return result;
+        }
+
+        LIAG_FUNC_MACRO Vec<T,Size> operator-(const Vec &t) const
+        {
+            assert(this->NUM_COMPONENTS == t.NUM_COMPONENTS);
+            Vec<T,Size> result;
+            for (uint i = 0; i < this->NUM_COMPONENTS; i++)
+            {
+                result[i] = this->Components[i] - t.Components[i];
+            }
+            return result;
+        }
 
         // getting element by [] operator
         // return a reference, so the value can be updated further
@@ -136,8 +160,9 @@ namespace EASYLINALG
                 standardDeviation += pow(this->Components[i] - mean, 2);
             }
 
-            if(sampleStdev){
-                return sqrt(standardDeviation / (this->NUM_COMPONENTS-1));
+            if (sampleStdev)
+            {
+                return sqrt(standardDeviation / (this->NUM_COMPONENTS - 1));
             }
 
             return sqrt(standardDeviation / this->NUM_COMPONENTS);
@@ -207,6 +232,20 @@ namespace EASYLINALG
                     }
                 }
             }
+        }
+
+        // dot product of another vector
+        // assuming vector is
+        LIAG_FUNC_MACRO T dotp(const Vec &t)
+        {
+            T productV = 0;
+            assert(this->NUM_COMPONENTS == t.NUM_COMPONENTS);
+
+            for (uint i = 0; i < this->NUM_COMPONENTS; i++)
+            {
+                productV += this->Components[i] * t.Components[i];
+            }
+            return productV;
         }
     };
 

@@ -3,6 +3,32 @@ import matplotlib.pyplot as plt
 from numpy import linalg as LA
 from sklearn.datasets import make_spd_matrix
 
+K3_0=np.array(
+    [
+        [1, -1, 4],
+        [1, 4, -2],
+        [1, 4, 2]
+    ]
+)
+
+K4_1=np.array(
+    [
+        [0.20, 0.60, 0.40, 0.80],
+        [0.60, 1.80, 1.20, 2.40],
+        [0.40, 1.20, 0.80, 1.60],
+        [0.80, 2.40, 1.60, 3.20]
+    ]
+)
+
+K4_2=np.array(
+    [
+  [2.3, 1.5, 0.8, 0.9],
+  [1.5, 1.2, 0.7, 0.6],
+  [0.8, 0.7, 0.5, 0.4],
+  [0.9, 0.6, 0.4, 0.3]
+    ]
+)
+
 K_0 = np.array([[-0.0050000,-0.0000000,-0.0000000],
                 [-0.0000000,-10000.0045819,-29999.9987456],
                 [-0.0000000,-29999.9987456,-90000.0012368]])
@@ -72,9 +98,61 @@ A = np.matmul(K_0,K_1)
 #print(spd)
 
 #w, v = LA.eig(spdMatrix)
-w, v = LA.eig(K_4)
+# w, v = LA.eig(K_4)
 
-print("eigen values")
-print(w)
-print("eigen vectors")
-print(v)
+# print("eigen values")
+# print(w)
+# print("eigen vectors")
+# print(v)
+
+# test determiant
+print("correct det of matrix", np.linalg.det(K_0))
+# qr of matrix
+Q, R = np.linalg.qr(K_0)
+print("Q")
+print(Q)
+print("R")
+print(R)
+print("det of Q", np.linalg.det(Q))
+print("det of R")
+detR=1.0
+for i in range(0,K_0.shape[0]):
+    detR=detR*R[i][i]
+print(detR)
+
+w, v = LA.eig(K_0)
+detREigen=1.0
+print("eigen shape", w.shape[0])
+for i in range(0,w.shape[0]):
+    detREigen=detREigen*w[i]
+print("det based on eigen value", detREigen)
+
+
+print("test K_2")
+# test determiant
+print("correct det of matrix", np.linalg.det(K_2))
+# qr of matrix
+Q, R = np.linalg.qr(K_2)
+print("Q")
+print(Q)
+print("R")
+print(R)
+print("det of Q", np.linalg.det(Q))
+print("det of R")
+detR=1.0
+for i in range(0,K_2.shape[0]):
+    detR=detR*R[i][i]
+print(detR)
+
+w, v = LA.eig(K_2)
+detREigen=1.0
+print("eigen shape", w.shape[0])
+for i in range(0,w.shape[0]):
+    detREigen=detREigen*w[i]
+print("det based on eigen value", detREigen)
+
+
+# more tests
+print("correct det of matrix K3_0", np.linalg.det(K3_0))
+print("correct det of matrix K4_1", np.linalg.det(K4_1))
+print("correct det of matrix K4_2", np.linalg.det(K4_2))
