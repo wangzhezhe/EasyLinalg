@@ -31,13 +31,23 @@ namespace EASYLINALG
                 this->Components[i] = init;
             }
         }
+
+        LIAG_FUNC_MACRO Vec(const Vec &src)
+        {
+            assert(this->NUM_COMPONENTS == src.NUM_COMPONENTS);
+            for (uint i = 0; i < Size; ++i)
+            {
+                this->Components[i] = src[i];
+            }
+        }
+
         // TODO
         // the += operator should use the original vector
         // the single + or - should just allocate a new vector
-        LIAG_FUNC_MACRO Vec<T,Size> operator+(const Vec &t) const
+        LIAG_FUNC_MACRO Vec<T, Size> operator+(const Vec &t) const
         {
             assert(this->NUM_COMPONENTS == t.NUM_COMPONENTS);
-            Vec<T,Size> result;
+            Vec<T, Size> result;
             for (uint i = 0; i < this->NUM_COMPONENTS; i++)
             {
                 result[i] = this->Components[i] + t.Components[i];
@@ -45,10 +55,10 @@ namespace EASYLINALG
             return result;
         }
 
-        LIAG_FUNC_MACRO Vec<T,Size> operator-(const Vec &t) const
+        LIAG_FUNC_MACRO Vec<T, Size> operator-(const Vec &t) const
         {
             assert(this->NUM_COMPONENTS == t.NUM_COMPONENTS);
-            Vec<T,Size> result;
+            Vec<T, Size> result;
             for (uint i = 0; i < this->NUM_COMPONENTS; i++)
             {
                 result[i] = this->Components[i] - t.Components[i];
@@ -58,7 +68,7 @@ namespace EASYLINALG
 
         // getting element by [] operator
         // return a reference, so the value can be updated further
-        LIAG_FUNC_MACRO T &operator[](uint index)
+        LIAG_FUNC_MACRO T &operator[](int index)
         {
             assert(index >= 0);
             assert(index < this->NUM_COMPONENTS);
@@ -87,14 +97,14 @@ namespace EASYLINALG
 
         still curious about results here, some cases, the object that call the [] is a const object
         */
-        LIAG_FUNC_MACRO const T &operator[](uint index) const
+        LIAG_FUNC_MACRO const T &operator[](int index) const
         {
             assert(index >= 0);
             assert(index < this->NUM_COMPONENTS);
             return this->Components[index];
         }
 
-        LIAG_FUNC_MACRO Vec &operator=(const Vec &t)
+        LIAG_FUNC_MACRO Vec<T, Size> &operator=(const Vec<T, Size> &t)
         {
             assert(this->NUM_COMPONENTS == t.NUM_COMPONENTS);
             for (uint i = 0; i < this->NUM_COMPONENTS; i++)
@@ -104,7 +114,7 @@ namespace EASYLINALG
             return *this;
         }
 
-        LIAG_FUNC_MACRO Vec &operator=(Vec &t)
+        LIAG_FUNC_MACRO Vec<T, Size> &operator=(Vec<T, Size> &t)
         {
             assert(this->NUM_COMPONENTS == t.NUM_COMPONENTS);
             for (uint i = 0; i < this->NUM_COMPONENTS; i++)
@@ -338,6 +348,20 @@ namespace EASYLINALG
             return *this;
         }
 
+        LIAG_FUNC_MACRO Matrix (const Matrix &src)
+        {
+            assert(this->NUM_ROWS == src.NUM_ROWS);
+            assert(this->NUM_COLUMNS == src.NUM_COLUMNS);
+
+            for (uint i = 0; i < this->NUM_ROWS; i++)
+            {
+                for (uint j = 0; j < this->NUM_COLUMNS; j++)
+                {
+                    this->Components[i][j] = src.Components[i][j];
+                }
+            }
+        }
+        
         LIAG_FUNC_MACRO Matrix &operator+(Matrix &t)
         {
             assert(this->NUM_ROWS == t.NUM_ROWS);
@@ -353,7 +377,7 @@ namespace EASYLINALG
             return *this;
         }
 
-        LIAG_FUNC_MACRO Matrix &operator=(Matrix &t)
+        LIAG_FUNC_MACRO Matrix<T, RowSize, ColSize> &operator=(Matrix<T, RowSize, ColSize> &t)
         {
             assert(this->NUM_ROWS == t.NUM_ROWS);
             assert(this->NUM_COLUMNS == t.NUM_COLUMNS);
@@ -368,7 +392,7 @@ namespace EASYLINALG
             return *this;
         }
 
-        LIAG_FUNC_MACRO Matrix &operator=(const Matrix &t)
+        LIAG_FUNC_MACRO Matrix<T, RowSize, ColSize> &operator=(const Matrix<T, RowSize, ColSize> &t)
         {
             assert(this->NUM_ROWS == t.NUM_ROWS);
             assert(this->NUM_COLUMNS == t.NUM_COLUMNS);

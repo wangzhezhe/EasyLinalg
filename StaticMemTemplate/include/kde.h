@@ -24,7 +24,7 @@ namespace EASYLINALG
     // input: data vector,dedicated point, bandwidth(default parameter)
     // output kde results at the dedicated point
     template <typename T, uint Size>
-    LIAG_FUNC_MACRO double KDE1D(const Vec<T, Size> &inputSample, float dedicatedPoint, float bandWidth = 0.0)
+    LIAG_FUNC_MACRO double KDE1D(const Vec<T, Size> &inputSample, float dedicatedPoint)
     {
         // choose the bandWidth according to input if it uses default value
         float h = BandWidthScott(inputSample);
@@ -51,7 +51,7 @@ namespace EASYLINALG
     // the input value X means
     // that we want to caculate the function where F(x<X)
     template <typename T, uint Size>
-    LIAG_FUNC_MACRO double KDECDF1D(const Vec<T, Size> &inputSample, float X, float bandWidth = 0.0)
+    LIAG_FUNC_MACRO double KDECDF1D(const Vec<T, Size> &inputSample, float X)
     {
         float h = BandWidthScott(inputSample);
         //float h = 1.0;

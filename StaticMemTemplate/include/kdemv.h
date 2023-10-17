@@ -26,12 +26,12 @@ namespace EASYLINALG
         double evaluatePDV(const Vec<T, Dim> inputSample)
         {
             double sum = 0;
-            for (int i = 0; i < NumSample; i++)
+            for (uint i = 0; i < NumSample; i++)
             {
                 // extract each column of matrix
                 // which is each sample
                 Vec<T, Dim> sample;
-                for (int j = 0; j < Dim; j++)
+                for (uint j = 0; j < Dim; j++)
                 {
                     sample[j] = this->InputData[j][i];
                 }
@@ -64,7 +64,7 @@ namespace EASYLINALG
                                double &mean1, double &mean2) const
         {
             double sum = 0;
-            for (int i = 0; i < NumSample; i++)
+            for (uint i = 0; i < NumSample; i++)
                 sum = sum + (arr1[i] - mean1) * (arr2[i] - mean2);
             return (double)sum / (double)(NumSample - 1);
         }
@@ -73,10 +73,10 @@ namespace EASYLINALG
         {
             // compute cov
             // compute the mean value of input data for the convenience to get cov matrix
-            for (int i = 0; i < Dim; i++)
+            for (uint i = 0; i < Dim; i++)
             {
                 double tempSum = 0;
-                for (int j = 0; j < NumSample; j++)
+                for (uint j = 0; j < NumSample; j++)
                 {
                     tempSum += this->InputData[i][j];
                 }
@@ -84,9 +84,9 @@ namespace EASYLINALG
             }
 
             Matrix<T, Dim, Dim> InitCov;
-            for (int p = 0; p < Dim; ++p)
+            for (uint p = 0; p < Dim; ++p)
             {
-                for (int q = p; q < Dim; ++q)
+                for (uint q = p; q < Dim; ++q)
                 {
                     // find the covax for the attribute p and attribute q
                     double cov = find_covariance(this->InputData[p], this->InputData[q], this->InputDataMean[p], this->InputDataMean[q]);

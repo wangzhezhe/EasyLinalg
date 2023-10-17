@@ -73,9 +73,9 @@ LIAG_FUNC_MACRO Vec<T, NumCol> VMMultiply(const Vec<T, NumRow> inputV,const Matr
 {
     Vec<T, NumCol> result;
     result.InitZero();
-    for (int i = 0; i < NumCol; i++)
+    for (uint i = 0; i < NumCol; i++)
     {
-        for (int j = 0; j < NumRow; j++)
+        for (uint j = 0; j < NumRow; j++)
         {
             // for each row
             result[i] += inputV[j]*inputM[j][i];
@@ -91,9 +91,9 @@ LIAG_FUNC_MACRO Vec<T, NumRow> MVMultiply(const Matrix<T, NumRow, NumCol> &input
 {
     Vec<T, NumRow> result;
     result.InitZero();
-    for (int i = 0; i < NumRow; i++)
+    for (uint i = 0; i < NumRow; i++)
     {
-        for (int j = 0; j < NumCol; j++)
+        for (uint j = 0; j < NumCol; j++)
         {
             // for each row
             result[i] += inputM[i][j] * inputV[j];
@@ -115,10 +115,10 @@ LIAG_FUNC_MACRO Vec<T, NumRow> MMVPV(
     Vec<T, NumRow> AUM;
     AUM.InitZero();
     // Be careful about it, init the vector to zero
-    for (int i = 0; i < NumRow; i++)
+    for (uint i = 0; i < NumRow; i++)
     {
         // adding vector into the matrix
-        for (int j = 0; j < NumCol; j++)
+        for (uint j = 0; j < NumCol; j++)
         {
             AUM[i] = AUM[i] + (A[i][j] * U[j]);
         }

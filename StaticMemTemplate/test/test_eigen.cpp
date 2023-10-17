@@ -42,9 +42,9 @@ void testMMVPV()
     Vec<int, Num> U;
     Vec<int, Num> M;
 
-    for (int i = 0; i < Num; i++)
+    for (uint i = 0; i < Num; i++)
     {
-        for (int j = 0; j < Num; j++)
+        for (uint j = 0; j < Num; j++)
         {
             A[i][j] = i + 1;
         }
@@ -53,9 +53,9 @@ void testMMVPV()
     }
 
     auto aum = MMVPV(A, U, M);
-    for (int i = 0; i < Num; i++)
+    for (uint i = 0; i < Num; i++)
     {
-        assert(aum[i] == (i + 1) * (Num + 1));
+        assert(aum[i] == static_cast<int>((i + 1) * (Num + 1)));
     }
 }
 
@@ -110,9 +110,9 @@ void testQRInner()
     Matrix<double, Num, Num> Q;
     Matrix<double, Num, Num> R;
 
-    for (int i = 0; i < Num; i++)
+    for (uint i = 0; i < Num; i++)
     {
-        for (int j = 0; j < Num; j++)
+        for (uint j = 0; j < Num; j++)
         {
             if (Num == 3)
             {
@@ -158,9 +158,9 @@ void testQRInner()
     QtQ.Show();
 
     // the QtQ is supposed to be identical matrix
-    for (int i = 0; i < Num; i++)
+    for (uint i = 0; i < Num; i++)
     {
-        for (int j = 0; j < Num; j++)
+        for (uint j = 0; j < Num; j++)
         {
             if (i == j)
             {
@@ -194,9 +194,9 @@ void testEVNQRInner()
     Matrix<double, Num, Num> m1;
     if (Num == 3)
     {
-        for (int i = 0; i < Num; i++)
+        for (uint i = 0; i < Num; i++)
         {
-            for (int j = 0; j < Num; j++)
+            for (uint j = 0; j < Num; j++)
             {
                 m1[i][j] = in33_1[i][j];
             }
@@ -218,9 +218,9 @@ void testEVNQRInner()
     }
     if (Num == 4)
     {
-        for (int i = 0; i < Num; i++)
+        for (uint i = 0; i < Num; i++)
         {
-            for (int j = 0; j < Num; j++)
+            for (uint j = 0; j < Num; j++)
             {
                 m1[i][j] = in44_1[i][j];
             }
@@ -246,9 +246,9 @@ void testEVNQRInner()
     }
     if (Num == 8)
     {
-        for (int i = 0; i < Num; i++)
+        for (uint i = 0; i < Num; i++)
         {
-            for (int j = 0; j < Num; j++)
+            for (uint j = 0; j < Num; j++)
             {
                 m1[i][j] = in88_0[i][j];
             }
@@ -260,7 +260,7 @@ void testEVNQRInner()
         eigenValues.Sort();
 
         std::cout << "--show eigen values" << std::endl;
-        for (int i = 0; i < Num; i++)
+        for (uint i = 0; i < Num; i++)
         {
             printf("%f ", eigenValues[i]);
         }
@@ -357,9 +357,9 @@ void testED8by8()
     printf("---test_eigen_vectors_decomposition 8by8\n");
     constexpr uint size = 8;
     Matrix<double, size, size> x1;
-    for (int i = 0; i < size; i++)
+    for (uint i = 0; i < size; i++)
     {
-        for (int j = 0; j < size; j++)
+        for (uint j = 0; j < size; j++)
         {
             x1[i][j] = in88_1[i][j];
         }
@@ -418,9 +418,9 @@ void testInverse8by8()
     constexpr uint size = 8;
     Matrix<double, size, size> x;
     Matrix<double, size, size> x_inv;
-    for (int i = 0; i < size; i++)
+    for (uint i = 0; i < size; i++)
     {
-        for (int j = 0; j < size; j++)
+        for (uint j = 0; j < size; j++)
         {
             x[i][j] = in88_0[i][j];
         }
@@ -445,9 +445,9 @@ void testInverse8by8()
     puts("x_inv*x");
     result2.Show();
 
-    for (int i = 0; i < size; i++)
+    for (uint i = 0; i < size; i++)
     {
-        for (int j = 0; j < size; j++)
+        for (uint j = 0; j < size; j++)
         {
             if (i == j)
             {
@@ -473,9 +473,9 @@ void testEigenDecompositionComplicated()
     printf("---test_eigen_vectors_decomposition testEigenDecompositionComplicated 8by8\n");
     constexpr uint size = 8;
     Matrix<double, size, size> x1;
-    for (int i = 0; i < size; i++)
+    for (uint i = 0; i < size; i++)
     {
-        for (int j = 0; j < size; j++)
+        for (uint j = 0; j < size; j++)
         {
             x1[i][j] = in88_2[i][j];
         }
@@ -496,9 +496,9 @@ void testEigenDecompositionComplicated()
     assert(x1.IsEqual(rst, 0.001) == true);
 
     Matrix<double, size, size> x3;
-    for (int i = 0; i < size; i++)
+    for (uint i = 0; i < size; i++)
     {
-        for (int j = 0; j < size; j++)
+        for (uint j = 0; j < size; j++)
         {
             x3[i][j] = in88_3[i][j];
         }
@@ -524,9 +524,9 @@ void testEigenDecompositionComplicatedShift()
     std::cout << "---testEigenDecompositionComplicatedShift---" << std::endl;
     constexpr uint size = 8;
     Matrix<double, size, size> x3;
-    for (int i = 0; i < size; i++)
+    for (uint i = 0; i < size; i++)
     {
-        for (int j = 0; j < size; j++)
+        for (uint j = 0; j < size; j++)
         {
             x3[i][j] = in88_3[i][j];
         }

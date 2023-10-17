@@ -40,9 +40,9 @@ void testMMVPV()
     Vec<int, Num> U;
     Vec<int, Num> M;
 
-    for (int i = 0; i < Num; i++)
+    for (uint i = 0; i < Num; i++)
     {
-        for (int j = 0; j < Num; j++)
+        for (uint j = 0; j < Num; j++)
         {
             A[i][j] = i + 1;
         }
@@ -51,9 +51,9 @@ void testMMVPV()
     }
 
     auto aum = MMVPV(A, U, M);
-    for (int i = 0; i < Num; i++)
+    for (uint i = 0; i < Num; i++)
     {
-        assert(aum[i] == (i + 1) * (Num + 1));
+        assert(aum[i] == static_cast<int>((i + 1) * (Num + 1)));
     }
 }
 
@@ -182,9 +182,9 @@ void testQRInner()
     Matrix<double, Num, Num> Q;
     Matrix<double, Num, Num> R;
 
-    for (int i = 0; i < Num; i++)
+    for (uint i = 0; i < Num; i++)
     {
-        for (int j = 0; j < Num; j++)
+        for (uint j = 0; j < Num; j++)
         {
             if (Num == 3)
             {
@@ -230,9 +230,9 @@ void testQRInner()
     QtQ.Show();
 
     // the QtQ is supposed to be identical matrix
-    for (int i = 0; i < Num; i++)
+    for (uint i = 0; i < Num; i++)
     {
-        for (int j = 0; j < Num; j++)
+        for (uint j = 0; j < Num; j++)
         {
             if (i == j)
             {
@@ -266,9 +266,9 @@ void testEVNQRInner()
     Matrix<double, Num, Num> m1;
     if (Num == 3)
     {
-        for (int i = 0; i < Num; i++)
+        for (uint i = 0; i < Num; i++)
         {
-            for (int j = 0; j < Num; j++)
+            for (uint j = 0; j < Num; j++)
             {
                 m1[i][j] = in33_1[i][j];
             }
@@ -290,9 +290,9 @@ void testEVNQRInner()
     }
     if (Num == 4)
     {
-        for (int i = 0; i < Num; i++)
+        for (uint i = 0; i < Num; i++)
         {
-            for (int j = 0; j < Num; j++)
+            for (uint j = 0; j < Num; j++)
             {
                 m1[i][j] = in44_1[i][j];
             }
@@ -315,9 +315,9 @@ void testEVNQRInner()
     }
     if (Num == 8)
     {
-        for (int i = 0; i < Num; i++)
+        for (uint i = 0; i < Num; i++)
         {
-            for (int j = 0; j < Num; j++)
+            for (uint j = 0; j < Num; j++)
             {
                 m1[i][j] = in88_0[i][j];
             }
@@ -326,7 +326,7 @@ void testEVNQRInner()
         m1.Show();
         SymmEigenValues(m1, 0.0001, 20, eigenValues);
 
-        for (int i = 0; i < Num; i++)
+        for (uint i = 0; i < Num; i++)
         {
             printf("%f ", eigenValues[i]);
         }

@@ -50,7 +50,7 @@ namespace EASYLINALG
 
         std::cout << "actual iter is " << actualIter << std::endl;
 
-        for (int i = 0; i < Size; i++)
+        for (uint i = 0; i < Size; i++)
         {
             if (fabs(Ak[i][i] - 0) < tol)
             {
@@ -93,7 +93,7 @@ namespace EASYLINALG
             }
         }
 
-        for (int i = 0; i < Size; i++)
+        for (uint i = 0; i < Size; i++)
         {
             if (fabs(Ak[i][i] - 0) < tol)
             {
@@ -109,7 +109,7 @@ namespace EASYLINALG
     // using inverse itertaion to compute the eigen vectors
     // https://en.wikipedia.org/wiki/Inverse_iteration
     template <typename T, uint Size>
-    LIAG_FUNC_MACRO Matrix<T, Size, Size> SymmEigenVectors(const Matrix<T, Size, Size> &A, const Vec<T, Size> &eigenValues, int maxIter)
+    LIAG_FUNC_MACRO Matrix<T, Size, Size> SymmEigenVectors(const Matrix<T, Size, Size> &A, const Vec<T, Size> &eigenValues, uint maxIter)
     {
 
         Matrix<T, Size, Size> eigenVectors;
@@ -152,7 +152,7 @@ namespace EASYLINALG
             Vec<T, Size> bPrev;
             Vec<T, Size> bCurr;
             // init as 1
-            for (int i = 0; i < Size; i++)
+            for (uint i = 0; i < Size; i++)
             {
                 bPrev[i] = 1.0;
             }
@@ -205,8 +205,8 @@ namespace EASYLINALG
             SymmEigenValues(A, tol, maxIter, eigenValues);
         }
 
-        std::cout << "eigen values" << std::endl;
-        eigenValues.Show();
+        // std::cout << "eigen values" << std::endl;
+        // eigenValues.Show();
 
         // solve eigen vectors
         Matrix<T, Size, Size> eigenVactors;
@@ -229,9 +229,9 @@ namespace EASYLINALG
                 {
                     // debug use
                     printf("eigen values are\n");
-                    for (int i = 0; i < Size; i++)
+                    for (uint j = 0; j < Size; j++)
                     {
-                        printf(" %f ", eigenValues[i]);
+                        printf(" %f ", eigenValues[j]);
                     }
                     printf("the eigen value is supposed to be >=0\n");
                     assert(false);

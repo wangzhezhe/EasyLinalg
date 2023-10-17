@@ -39,7 +39,7 @@ namespace EASYLINALG
         SymmEigenValues(A, tol, maxIter, eigenValues);
         // return products of the eigenValues
         double det = 1.0;
-        for (int i = 0; i < Size; i++)
+        for (uint i = 0; i < Size; i++)
         {
             det *= eigenValues[i];
         }
