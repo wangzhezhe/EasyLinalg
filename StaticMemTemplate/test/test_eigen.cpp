@@ -5,8 +5,6 @@
 
 using namespace EASYLINALG;
 
-
-
 void testInit()
 {
     // test vector
@@ -531,10 +529,10 @@ void testEigenDecompositionComplicatedShift()
             x3[i][j] = in88_3[i][j];
         }
     }
-    //for this A3 matrix, we need to improve iteration to 1000 to get accurate eigen value
-    //the tolerance is around 0.0005
-    //there is one value at the corner, it is hard to converge to the value under the 0.0005
-    //after 500 iteration step
+    // for this A3 matrix, we need to improve iteration to 1000 to get accurate eigen value
+    // the tolerance is around 0.0005
+    // there is one value at the corner, it is hard to converge to the value under the 0.0005
+    // after 500 iteration step
     Matrix<double, size, size> A3 = SymmEigenDecomposition(x3, 0.0005, 1000, true);
     Matrix<double, size, size> ATrans3 = A3;
     ATrans3.Transpose();
@@ -550,15 +548,44 @@ void testEigenDecompositionComplicatedShift()
     assert(x3.IsEqual(rst3, 0.001) == true);
 }
 
+void testEigenGetVector()
+{
+    std::cout << "---testEigenGetVector---" << std::endl;
+    // input eigen value and associated matrix
+    constexpr uint size = 4;
+    Matrix<double, size, size> x;
+    for (uint i = 0; i < size; i++)
+    {
+        for (uint j = 0; j < size; j++)
+        {
+            x[i][j] = in44_1[i][j];
+        }
+    }
+
+    // test eigen
+    //    LIAG_FUNC_MACRO Vec<T, Size> ComputeEigenVectors(const Matrix<T, Size, Size> &A, const T &eigenValue)
+    Vec<double, size> eigenVector;
+    double eigenValue = 6.0;
+    eigenVector = ComputeEigenVectors(x, eigenValue, 1000);
+
+    // eigenVector.Show();
+    // 0.182574 0.547723 0.365148 0.730297
+    //  get eigen vector
+    assert(fabs(eigenVector[0] - 0.182574) < 0.00001);
+    assert(fabs(eigenVector[1] - 0.547723) < 0.00001);
+    assert(fabs(eigenVector[2] - 0.365148) < 0.00001);
+    assert(fabs(eigenVector[3] - 0.730297) < 0.00001);
+}
+
 int main()
 {
+    testInverse();
+    testQR();
+    testEigenValuesNaiveQR();
+    testEigenValuesShift();
+    testEigenDecomposition();
+    testEigenGetVector();
 
-    // testInverse();
-    // testQR();
-    // testEigenValuesNaiveQR();
-    // testEigenValuesShift();
-    // testEigenDecomposition();
-
-    // testEigenDecompositionComplicated();
+    testEigenDecompositionComplicated();
     testEigenDecompositionComplicatedShift();
 }
